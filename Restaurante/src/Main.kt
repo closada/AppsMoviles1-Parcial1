@@ -1,8 +1,11 @@
 fun main() {
+<<<<<<< HEAD
     val name = "Kotlin"
     //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
     // to see how IntelliJ IDEA suggests fixing it.
     println("Hello, " + name + "!")
+=======
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
     val x = Administrador("admin","1234","1","mati@gmial.com")
     var usuario = Usuarios()
     while(true){
@@ -12,26 +15,40 @@ fun main() {
 
 fun inicioPantalla(usuario: Usuarios) {
     // iniciar o registrar secion llamando a la funcion que correspodna segun el imput
+<<<<<<< HEAD
     // 1 para iniciar sesion
+=======
+    // 1 para iniciar secion
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
     // 2 para registrar usuario cliente
     // 3 para cerrar el programa
     // cualquier otro valor sera rechasado y notificado de que no es calido
 
+<<<<<<< HEAD
 
 
     println("selecione 1 para iniciar sesion")
     println("selecione 2 para registrarsee")
+=======
+    println("selecione 1 para iniciar secion")
+    println("selecione 2 para registrarce")
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
     println("selecione 3 para salir del programa")
     var inputSeleccion = readLine()
     val datoSano = inputSeleccion?.toIntOrNull()
     when(datoSano) {
+<<<<<<< HEAD
         1 -> inicioSesion(usuario)
+=======
+        1 -> inicioSecion(usuario)
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
         2 -> registroUsuarioCliente(usuario)
         3 -> println("cerre xd")
         else -> println("numero no valido vuelva a intentar")
     }
 }
 
+<<<<<<< HEAD
 fun inicioSesion(usuario: Usuarios) {
     //validar el usuario y contraseña guardados en algun arreglo de usuarios
     // con el for hago que pueda recorrer a mano los usuarios guardados
@@ -58,13 +75,22 @@ fun inicioSesion(usuario: Usuarios) {
     if (!encontrado) {
         println("Usuario o contraseña incorrectos.")
     }
+=======
+fun inicioSecion(usuario: Usuarios) {
+    //validar el usuario y contraseña guardados en algun arreglo de usuarios
+
+    println("hola mundo")
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
 }
 
 fun registroUsuarioCliente(usuario: Usuarios) {
     //guarda los datos en el arreglo de usuarios
     //pido todos los datos y luego llamo a la funcion agregarUsuario de la clase Usuarios
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
     println("Ingrese nombre:")
     val nombre = readLine().orEmpty()
     println("Ingrese contraseña:")
@@ -80,11 +106,19 @@ fun registroUsuarioCliente(usuario: Usuarios) {
 }
 
 class Usuarios(){
+<<<<<<< HEAD
     var listaUsuarios = mutableListOf<Personas>()
 
     fun agregarUsuario(x:Personas){
         //println(x.getNombre())
         listaUsuarios.add(x)
+=======
+    var listaUsuarios = listOf<Personas>()
+
+    fun agregarUsuario(x:Personas){
+        //println(x.getNombre())
+        listaUsuarios.plus(x)
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
         //x.setID() = listaUsuarios.lastIndexOf(x)+1
         MostrarUsuarios()
     }
@@ -107,6 +141,7 @@ open class Personas(nombre: String,password: String,tel: String, email: String){
     private val email=email
     private var listaDePedidos = listOf<Pedido>()
 
+<<<<<<< HEAD
 
     fun getNombre(): String = nombre
     fun getPassword(): String = password
@@ -115,6 +150,22 @@ open class Personas(nombre: String,password: String,tel: String, email: String){
 }
 
 
+=======
+    fun getNombre():String{
+        return nombre
+    }
+    fun getPassword():String{
+        return password
+    }
+    fun getTelefono():String{
+        return telefono
+    }
+    fun getEmail():String{
+        return email
+    }
+}
+
+>>>>>>> d82b2255e8eeb666729a36ac3917320c158489ad
 class Administrador (nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
 class Vendedor(nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
 class Cliente(nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
