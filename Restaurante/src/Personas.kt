@@ -86,17 +86,21 @@ class Usuarios {
         }
     }
 
-    fun eliminarUsuarioPorEmail(email: String): Boolean {
+   fun eliminarUsuarioPorEmail(email: String) {
+        if (email == (SessionManager.usuarioActual?.getEmail() ?: "")) {
+            throw NoSePuedeEliminarASiMismoException("No puedes eliminarte a ti mismo.")
+        }
+
         val usuarioAEliminar = listaUsuarios.find { it.getEmail() == email }
-        return if (usuarioAEliminar != null) {
+        if (usuarioAEliminar != null) {
             listaUsuarios.remove(usuarioAEliminar)
             println("✅ Usuario con email $email eliminado correctamente.")
-            true
         } else {
-            println("❌ No se encontró un usuario con ese email.")
-            false
+            throw UsuarioNoEncontradoException("No se encontró un usuario con el email: $email")
         }
     }
+
+
 
 }
 

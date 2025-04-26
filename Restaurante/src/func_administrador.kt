@@ -31,28 +31,33 @@ fun admiCreaUsuario() {
 }
 
 fun adminEliminaUsuario() {
-        println("Ingrese el email del usuario a eliminar:")
-        val emailAEliminar = readLine() ?: ""
+    println("Ingrese el email del usuario a eliminar:")
+    val emailAEliminar = readLine() ?: ""
 
-        val usuarioActual = SessionManager.usuarioActual
+    val usuarioActual = SessionManager.usuarioActual
 
-        if (usuarioActual is Administrador) {
-            if (usuarioActual.getEmail() == emailAEliminar) {
-                println("❌ No puedes eliminarte a ti mismo mientras estás logueado.")
+    if (usuarioActual is Administrador) {
+        try {
+            // Confirmación antes de eliminar
+            println("¿Estás seguro que querés eliminar al usuario con email $emailAEliminar? (S/N)")
+            val confirmacion = readLine()?.trim()?.lowercase()
+
+            if (confirmacion == "s") {
+                SessionBD.sistemaUsuarios.eliminarUsuarioPorEmail(emailAEliminar)
             } else {
-                val eliminado = SessionBD.sistemaUsuarios.eliminarUsuarioPorEmail(emailAEliminar)
-                if (eliminado) {
-                    println("✅ Usuario eliminado exitosamente.")
-                } else {
-                    println("❌ No se encontró un usuario con ese email.")
-                }
+                println("❌ Operación cancelada.")
             }
-        } else {
-            println("❌ Solo un administrador puede eliminar usuarios.")
+
+        } catch (e: NoSePuedeEliminarASiMismoException) {
+            println(e.message)
+        } catch (e: UsuarioNoEncontradoException) {
+            println(e.message)
         }
-
-
+    } else {
+        println("❌ Solo un administrador puede eliminar usuarios.")
+    }
 }
+
 
 fun  adminMuestraUsuarios () {
     SessionBD.sistemaUsuarios.mostrarUsuarios()
@@ -67,7 +72,14 @@ fun adminReportes() {
         println("0 - Volver al menú anterior")
 
         when (readLine()?.toIntOrNull()) {
-            1 -> PedidosxCliente()
+            1 -> {
+                try {
+                    PedidosxCliente()
+                } catch (e: UsuarioNoEncontradoException) {
+                    println(e.message)
+                }
+            }
+
             2 -> ClientesConPedidos()
             3 -> TotalRecaudado()
             0 -> break
@@ -78,33 +90,35 @@ fun adminReportes() {
 
 /* Funciones especiales de reporteria */
 fun PedidosxCliente() {
-    print("Ingrese el email del cliente:")
+    print("Ingrese el email del cliente: ")
     val emailCliente = readLine() ?: ""
 
     val cliente = SessionBD.sistemaUsuarios.getListausuarios()
         .filterIsInstance<Cliente>()
         .find { it.getEmail() == emailCliente }
+        ?: throw UsuarioNoEncontradoException("❌ Cliente con email $emailCliente no encontrado.")
 
-    if (cliente != null) {
-        println("\nPedidos de ${cliente.getNombre()}:")
-        val pedidosOrdenados = cliente.obtenerPedidos().sortedBy { it.getFechaPedido() }
-        pedidosOrdenados.forEach { it.mostrarPedido() }
-    } else {
-        println("❌ Cliente no encontrado.")
-    }
+    println("\nPedidos de ${cliente.getNombre()}:")
+    val pedidosOrdenados = cliente.obtenerPedidos().sortedBy { it.getFechaPedido() }
+    pedidosOrdenados.forEach { it.mostrarPedido() }
 }
+
 
 fun ClientesConPedidos() {
     val clientesConMuchosPedidos = SessionBD.sistemaUsuarios.getListausuarios()
         .filterIsInstance<Cliente>()
         .filter { it.obtenerPedidos().size > 1 }
+        .sortedByDescending { it.obtenerPedidos().size } // Orden de mayor a menor por cantidad de pedidos
 
-    if (clientesConMuchosPedidos.isNotEmpty()) {
-        println("\nClientes que realizaron más de un pedido:")
-        clientesConMuchosPedidos.forEach { println("${it.getNombre()} (cant: ${it.obtenerPedidos().size} | total: $${it.obtenerTotaldePedidos()})") }
-    } else {
+    println("\n----- CLIENTES CON MÚLTIPLES PEDIDOS -----")
+    if (clientesConMuchosPedidos.isEmpty()) {
         println("❌ No hay clientes con múltiples pedidos.")
+    } else {
+        clientesConMuchosPedidos.forEach {
+            println("${it.getNombre()} (Cantidad: ${it.obtenerPedidos().size} | Total: $${it.obtenerTotaldePedidos()})")
+        }
     }
+    println("------------------------------------------")
 }
 
 fun TotalRecaudado() {
