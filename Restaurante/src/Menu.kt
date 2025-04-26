@@ -135,7 +135,8 @@ fun menuCliente() {
             3 -> println("modificado")
             4 -> println("vistos")
             0 -> {
-                println("Sesión de administrador finalizada.")
+                SessionManager.usuarioActual = null
+                println("Sesión de cliente finalizada.")
                 break
             }
             else -> println("Opción inválida")
@@ -158,7 +159,8 @@ fun menuVendedor() {
             2 -> println("modificado el producto!")
             3 -> println("modificar el estado de un pedido")
             0 -> {
-                println("Sesión de administrador finalizada.")
+                SessionManager.usuarioActual = null
+                println("Sesión de vendedor finalizada.")
                 break
             }
             else -> println("Opción inválida")
@@ -187,6 +189,7 @@ fun menuAdministrador() {
                     "Reportar cuáles clientes hicieron más de un pedido.\n" +
                     "Mostrar total recaudado por productos vendidos (suma de precios de productos en pedidos entregados).\n")
             0 -> {
+                SessionManager.usuarioActual = null
                 println("Sesión de administrador finalizada.")
                 break
             }
