@@ -31,9 +31,10 @@ class Producto (
         if (cantidad <= stock) {
             stock -= cantidad
         } else {
-            println("⚠ No hay suficiente stock de $nombre. Disponible: $stock, requerido: $cantidad.")
+            throw StockInsuficienteException("No hay suficiente stock de $nombre. Disponible: $stock, requerido: $cantidad.")
         }
     }
+
 
 
     fun mostrarProducto() {

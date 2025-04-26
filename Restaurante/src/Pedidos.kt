@@ -26,14 +26,17 @@ class Pedido(
 
 
     fun agregarProducto(producto: Producto, cantidad: Int = 1) {
-        if (producto.getStock() >= cantidad) {
-            /* la funcion getOfDefault devuelve si existe el producto, la cantidad que tiene actualmente y si no 0. y a eso le suma la cantidad del stock a sumar al pedido */
-            productosConCantidad[producto] = productosConCantidad.getOrDefault(producto, 0) + cantidad
+        try {
+            // Intenta disminuir el stock, si hay un error, lo lanza
             producto.disminuirStock(cantidad)
-        } else {
-            println("❌ No se pudo agregar ${producto.getNombre()} x$cantidad. Stock insuficiente.")
+
+            // Si se pudo disminuir el stock, agregamos el producto al pedido
+            productosConCantidad[producto] = productosConCantidad.getOrDefault(producto, 0) + cantidad
+        } catch (e: StockInsuficienteException) {
+            println("❌ No se pudo agregar ${producto.getNombre()} x$cantidad. ${e.message}")
         }
     }
+
 
 
     fun obtenerProductos(): Map<Producto, Int> {
