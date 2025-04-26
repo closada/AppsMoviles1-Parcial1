@@ -83,13 +83,13 @@ class Usuarios {
 object UsuarioFactory {
 
     fun crearCliente(): Cliente {
-        println("Ingrese nombre:")
+        print("Ingrese nombre:")
         val nombre = readLine() ?: ""
-        println("Ingrese contraseña:")
+        print("Ingrese contraseña:")
         val pass = readLine() ?: ""
-        println("Ingrese teléfono:")
+        print("Ingrese teléfono:")
         val tel = readLine() ?: ""
-        println("Ingrese email:")
+        print("Ingrese email:")
         val email = readLine() ?: ""
         return Cliente(nombre, pass, tel, email)
     }
@@ -111,25 +111,25 @@ object UsuarioFactory {
     }
 
     private fun crearAdministrador(): Administrador {
-        println("Nombre:")
+        print("Nombre:")
         val nombre = readLine() ?: ""
-        println("Contraseña:")
+        print("Contraseña:")
         val pass = readLine() ?: ""
-        println("Teléfono:")
+        print("Teléfono:")
         val tel = readLine() ?: ""
-        println("Email:")
+        print("Email:")
         val email = readLine() ?: ""
         return Administrador(nombre, pass, tel, email)
     }
 
     private fun crearVendedor(): Vendedor {
-        println("Nombre:")
+        print("Nombre:")
         val nombre = readLine() ?: ""
-        println("Contraseña:")
+        print("Contraseña:")
         val pass = readLine() ?: ""
-        println("Teléfono:")
+        print("Teléfono:")
         val tel = readLine() ?: ""
-        println("Email:")
+        print("Email:")
         val email = readLine() ?: ""
         return Vendedor(nombre, pass, tel, email)
     }

@@ -4,7 +4,7 @@ object SessionManager {
 }
 
 
-/* SINGLETON QUE GUARDA TODOS LOS USUARIOS DEL SISTEMA - ESTILO BD */
+/* SINGLETON QUE GUARDA TODOS LOS USUARIOS DEL SISTEMA Y + - ESTILO BD */
 object SessionBD {
     val sistemaUsuarios = Usuarios()
 
@@ -34,7 +34,7 @@ object SessionBD {
 
 
 /****** MENU PRINCIPAL *********/
-fun menuPrincipal(usuarios: Usuarios) {
+fun menuPrincipal() {
     while (true) {
         println("\n--- MENÚ PRINCIPAL ---")
         println("1 - Iniciar sesión")
@@ -45,12 +45,12 @@ fun menuPrincipal(usuarios: Usuarios) {
             1 -> {
 
                 /* iniciar sesion! */
-                println("Ingrese email:")
+                print("Ingrese email:")
                 val email = readLine() ?: ""
-                println("Ingrese contraseña:")
+                print("Ingrese contraseña:")
                 val pass = readLine() ?: ""
 
-                val usuario = usuarios.getListausuarios().find {
+                val usuario = SessionBD.sistemaUsuarios.getListausuarios().find {
                     it.getEmail() == email && it.getPassword() == pass
                 }
 
@@ -70,7 +70,7 @@ fun menuPrincipal(usuarios: Usuarios) {
 
             2 -> {
                 val nuevoCliente = UsuarioFactory.crearCliente()
-                usuarios.agregarUsuario(nuevoCliente)
+                SessionBD.sistemaUsuarios.agregarUsuario(nuevoCliente)
                 println("Cliente registrado con éxito. Ahora puede iniciar sesión.")
             }
 
@@ -85,17 +85,59 @@ fun menuPrincipal(usuarios: Usuarios) {
 }
 
 fun menuCliente() {
-    println("menu cliente!")
+    while (true) {
+        println("\n--- MENÚ CLIENTE: " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + " ---")
+        println("1 - Hacer un pedido")
+        println("2 - Cancelar un pedido (atencion! solo en estado Pendiente)")
+        println("3 - Modificar un pedido (atencion! solo en estado Pendiente)")
+        println("4 - Ver mis pedidos")
+        println("0 - Cerrar sesión")
+
+        when (readLine()?.toIntOrNull()) {
+            1 -> {
+                println("hecho el pedido!")
+                }
+            2 -> println("cancelado")
+            3 -> println("modificado")
+            4 -> println("vistos")
+            0 -> {
+                println("Sesión de administrador finalizada.")
+                break
+            }
+            else -> println("Opción inválida")
+        }
+    }
 }
 
 fun menuVendedor() {
-    println("menu cliente!")
+    while (true) {
+        println("\n--- MENÚ VENDEDOR: " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + " ---")
+        println("1 - Crear nuevo producto")
+        println("2 - modificar un producto")
+        println("3 - modificar el estado de un pedido existente")
+        println("0 - Cerrar sesión")
+
+        when (readLine()?.toIntOrNull()) {
+            1 -> {
+                println("creado el producto!")
+                }
+            2 -> println("modificado el producto!")
+            3 -> println("modificar el estado de un pedido")
+            0 -> {
+                println("Sesión de administrador finalizada.")
+                break
+            }
+            else -> println("Opción inválida")
+        }
+    }
 }
 fun menuAdministrador() {
     while (true) {
-        println("\n--- MENÚ ADMINISTRADOR ---")
+        println("\n--- MENÚ ADMINISTRADOR " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + "---")
         println("1 - Crear nuevo usuario (admin o vendedor)")
-        println("2 - Ver todos los usuarios")
+        println("2 - Eliminar un usuario (admin o vendedor)")
+        println("3 - Ver todos los usuarios")
+        println("4 - Ver reportes")
         println("0 - Cerrar sesión")
 
         when (readLine()?.toIntOrNull()) {
@@ -105,7 +147,11 @@ fun menuAdministrador() {
                     SessionBD.sistemaUsuarios.agregarUsuario(nuevoUsuario)
                 }
             }
-            2 -> SessionBD.sistemaUsuarios.mostrarUsuarios()
+            2 -> println("eliminado el usuario!")
+            3 -> SessionBD.sistemaUsuarios.mostrarUsuarios()
+            4 -> println("armar submenu con 3 opciones de reportes: 1) Listar los pedidos de un cliente, ordenados por fecha.\n" +
+                    "Reportar cuáles clientes hicieron más de un pedido.\n" +
+                    "Mostrar total recaudado por productos vendidos (suma de precios de productos en pedidos entregados).\n")
             0 -> {
                 println("Sesión de administrador finalizada.")
                 break
