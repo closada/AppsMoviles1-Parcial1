@@ -43,7 +43,7 @@ fun inicioSesion(usuario: Usuarios) {
 
     var encontrado = false
 
-    for (persona in usuario.listaUsuarios) {
+    for (persona in usuario.getListausuarios()) {
         if (persona.getNombre() == nombre && persona.getPassword() == password) {
             println("Bienvenido, ${persona.getNombre()}!")
             println("Tus datos personales:")
@@ -79,45 +79,7 @@ fun registroUsuarioCliente(usuario: Usuarios) {
     usuario.agregarUsuario(x)
 }
 
-class Usuarios(){
-    var listaUsuarios = mutableListOf<Personas>()
 
-    fun agregarUsuario(x:Personas){
-        //println(x.getNombre())
-        listaUsuarios.add(x)
-        //x.setID() = listaUsuarios.lastIndexOf(x)+1
-        MostrarUsuarios()
-    }
-
-    fun MostrarUsuarios(){
-        println("llegue hasta MostrarUsuarios")
-        listaUsuarios.forEach { println("Nombre: " + it.getNombre()) }
-    }
-
-}
-
-//esta clase hereda a todos los tipos de usuarios la id mail usuario y contraseña
-// para poder guardarlos despues en una coleccion y poder iniciar secion
-open class Personas(nombre: String,password: String,tel: String, email: String){
-    //a revisar
-    //val id
-    private val nombre = nombre
-    private val password= password
-    private val telefono=tel
-    private val email=email
-    private var listaDePedidos = listOf<Pedido>()
-
-
-    fun getNombre(): String = nombre
-    fun getPassword(): String = password
-    fun getTelefono(): String = telefono
-    fun getEmail(): String = email
-}
-
-
-class Administrador (nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
-class Vendedor(nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
-class Cliente(nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
 
 
 class Pedido(clienteAsociado: Int,date: String){}
