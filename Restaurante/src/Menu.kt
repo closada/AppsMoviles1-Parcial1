@@ -135,8 +135,7 @@ fun menuCliente() {
             3 -> println("modificado")
             4 -> println("vistos")
             0 -> {
-                SessionManager.usuarioActual = null
-                println("Sesión de cliente finalizada.")
+                cerrarSesion()
                 break
             }
             else -> println("Opción inválida")
@@ -159,41 +158,16 @@ fun menuVendedor() {
             2 -> println("modificado el producto!")
             3 -> println("modificar el estado de un pedido")
             0 -> {
-                SessionManager.usuarioActual = null
-                println("Sesión de vendedor finalizada.")
+                cerrarSesion()
                 break
             }
             else -> println("Opción inválida")
         }
     }
 }
-fun menuAdministrador() {
-    while (true) {
-        println("\n--- MENÚ ADMINISTRADOR " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + "---")
-        println("1 - Crear nuevo usuario (admin o vendedor)")
-        println("2 - Eliminar un usuario (admin o vendedor)")
-        println("3 - Ver todos los usuarios")
-        println("4 - Ver reportes")
-        println("0 - Cerrar sesión")
 
-        when (readLine()?.toIntOrNull()) {
-            1 -> {
-                val nuevoUsuario = UsuarioFactory.crearUsuarioComoAdmin()
-                if (nuevoUsuario != null) {
-                    SessionBD.sistemaUsuarios.agregarUsuario(nuevoUsuario)
-                }
-            }
-            2 -> println("eliminado el usuario!")
-            3 -> SessionBD.sistemaUsuarios.mostrarUsuarios()
-            4 -> println("armar submenu con 3 opciones de reportes: 1) Listar los pedidos de un cliente, ordenados por fecha.\n" +
-                    "Reportar cuáles clientes hicieron más de un pedido.\n" +
-                    "Mostrar total recaudado por productos vendidos (suma de precios de productos en pedidos entregados).\n")
-            0 -> {
-                SessionManager.usuarioActual = null
-                println("Sesión de administrador finalizada.")
-                break
-            }
-            else -> println("Opción inválida")
-        }
-    }
+/* funcion para cerrar sesion el usuario logueado */
+fun cerrarSesion() {
+    SessionManager.usuarioActual = null
+    println("Sesión finalizada.")
 }

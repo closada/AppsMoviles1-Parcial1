@@ -77,6 +77,19 @@ class Usuarios {
             println("-----------------------------")
         }
     }
+
+    fun eliminarUsuarioPorEmail(email: String): Boolean {
+        val usuarioAEliminar = listaUsuarios.find { it.getEmail() == email }
+        return if (usuarioAEliminar != null) {
+            listaUsuarios.remove(usuarioAEliminar)
+            println("✅ Usuario con email $email eliminado correctamente.")
+            true
+        } else {
+            println("❌ No se encontró un usuario con ese email.")
+            false
+        }
+    }
+
 }
 
 /* este factory crea manualmente el tipo de usuario que se quiera crear - ESTA FUNCIONALIDAD SOLO LO VA A PODER HACER EL USUARIO ADMINISTRADOR */

@@ -43,5 +43,10 @@ class Pedido(
         }
         println("Total: ${calcularTotal()}")
     }
+
+    fun getFechaPedido() : String = fechaPedido
+
+    fun getEstado(): EstadoPedido = estado
+
 }
 
