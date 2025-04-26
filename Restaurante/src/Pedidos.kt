@@ -12,6 +12,18 @@ class Pedido(
     private var montoTotal: Float = 0.0f
 ) {
     private val productosConCantidad = mutableMapOf<Producto, Int>()
+    private val id: Int
+
+    /* se encarga de sumar el contador cada vez que se crea un nuevo objeto */
+    init {
+        id = ++contadorIds
+    }
+
+    /* es una instancia unica que puede almacenar informacion que sean COMUNES EN TODAS LAS INSTANCIAS DE LA CLASE*/
+    companion object {
+        private var contadorIds = 0
+    }
+
 
     fun agregarProducto(producto: Producto, cantidad: Int = 1) {
         if (producto.getStock() >= cantidad) {
@@ -37,11 +49,11 @@ class Pedido(
     }
 
     fun mostrarPedido() {
-        println("Pedido del cliente: ${clienteAsociado.getNombre()}")
+        println("Pedido ID: ${id} fecha: ${fechaPedido} estado: ${estado}")
         productosConCantidad.forEach { (producto, cantidad) ->
             println("${producto.getNombre()} x $cantidad")
         }
-        println("Total: ${calcularTotal()}")
+        println("Total: ${calcularTotal()}\n-------------\n")
     }
 
     fun getFechaPedido() : String = fechaPedido

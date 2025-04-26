@@ -35,6 +35,7 @@ fun adminEliminaUsuario() {
         val emailAEliminar = readLine() ?: ""
 
         val usuarioActual = SessionManager.usuarioActual
+
         if (usuarioActual is Administrador) {
             if (usuarioActual.getEmail() == emailAEliminar) {
                 println("❌ No puedes eliminarte a ti mismo mientras estás logueado.")
@@ -100,7 +101,7 @@ fun ClientesConPedidos() {
 
     if (clientesConMuchosPedidos.isNotEmpty()) {
         println("\nClientes que realizaron más de un pedido:")
-        clientesConMuchosPedidos.forEach { println(it.getNombre()) }
+        clientesConMuchosPedidos.forEach { println("${it.getNombre()} (cant: ${it.obtenerPedidos().size} | total: $${it.obtenerTotaldePedidos()})") }
     } else {
         println("❌ No hay clientes con múltiples pedidos.")
     }

@@ -46,6 +46,14 @@ class Cliente(
     fun obtenerPedidos(): List<Pedido> {
         return listaDePedidos
     }
+
+    fun obtenerTotaldePedidos(): Float {
+        var total = 0.0f
+        for (pedido in listaDePedidos) {
+            total += pedido.calcularTotal()
+        }
+        return total
+    }
 }
 
 /* Clase Usuarios que guarda el listado de usuarios de cualquier tipo */

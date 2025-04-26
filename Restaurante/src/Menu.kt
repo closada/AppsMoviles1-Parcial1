@@ -36,7 +36,7 @@ object SessionBD {
         // Agregarlos a la lista de productos
         productosDisponibles.addAll(listOf(producto1, producto2, producto3, producto4, producto5))
 
-        // Crear pedidos ficticios
+        // Crear pedidos
         val pedido1 = Pedido(cliente1, "2025-04-25", EstadoPedido.Entregado)
         pedido1.agregarProducto(producto1, 2) /* 2 milanesas */
         pedido1.agregarProducto(producto5, 1) /* 1 agua*/
@@ -47,6 +47,12 @@ object SessionBD {
         pedido2.agregarProducto(producto4, 1) /* 1 flan */
         pedido2.agregarProducto(producto3, 1) /* 1 coca */
         cliente2.agregarPedido(pedido2)
+
+        val pedido3 = Pedido(cliente2, "2025-04-25", EstadoPedido.Pendiente)
+        pedido3.agregarProducto(producto1, 4) /* 4 milanesas */
+        pedido3.agregarProducto(producto5, 1) /* 1 agua*/
+        pedido3.agregarProducto(producto3, 3) /* 3 cocas*/
+        cliente2.agregarPedido(pedido3)
 
     }
 
