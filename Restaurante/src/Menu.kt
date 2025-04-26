@@ -7,6 +7,7 @@ object SessionManager {
 /* SINGLETON QUE GUARDA TODOS LOS USUARIOS DEL SISTEMA Y + - ESTILO BD */
 object SessionBD {
     val sistemaUsuarios = Usuarios()
+    val productosDisponibles = mutableListOf<Producto>()
 
     init {
         // Crear 2 clientes
@@ -24,10 +25,43 @@ object SessionBD {
         sistemaUsuarios.agregarUsuario(cliente2)
         sistemaUsuarios.agregarUsuario(vendedor1)
         sistemaUsuarios.agregarUsuario(admin1)
+
+        // Crear productos (algunos sin stock)
+        val producto1 = Producto("Milanesa con papas", 25000f, "Clásica milanesa con guarnición", 10, TipoProducto.PlatoPrincipal)
+        val producto2 = Producto("Ensalada César", 18000f, "Lechuga, pollo, croutons y aderezo", 5, TipoProducto.Entrada)
+        val producto3 = Producto("Coca Cola", 2500f, "Botella 500ml", 5, TipoProducto.Bebida) // sin stock
+        val producto4 = Producto("Flan con dulce", 6200f, "Postre casero", 3, TipoProducto.Postre)
+        val producto5 = Producto("Agua mineral", 1200f, "Botella 500ml", 2, TipoProducto.Bebida)
+
+        // Agregarlos a la lista de productos
+        productosDisponibles.addAll(listOf(producto1, producto2, producto3, producto4, producto5))
+
+        // Crear pedidos ficticios
+        val pedido1 = Pedido(cliente1, "2025-04-25", EstadoPedido.Entregado)
+        pedido1.agregarProducto(producto1, 2) /* 2 milanesas */
+        pedido1.agregarProducto(producto5, 1) /* 1 agua*/
+        cliente1.agregarPedido(pedido1)
+
+        val pedido2 = Pedido(cliente2, "2025-04-24", EstadoPedido.Pendiente)
+        pedido2.agregarProducto(producto2, 1) /* 1 ensalada */
+        pedido2.agregarProducto(producto4, 1) /* 1 flan */
+        pedido2.agregarProducto(producto3, 1) /* 1 coca */
+        cliente2.agregarPedido(pedido2)
+
     }
 
     fun mostrarUsuarios() {
         sistemaUsuarios.mostrarUsuarios()
+    }
+
+    fun mostrarProductos() {
+        println("----- PRODUCTOS DISPONIBLES -----")
+        productosDisponibles.forEach { it.mostrarProducto() }
+    }
+
+    fun mostrarPedidosCliente(cliente: Cliente) {
+        println("----- PEDIDOS DE ${cliente.getNombre()} -----")
+        cliente.obtenerPedidos().forEach { it.mostrarPedido() }
     }
 }
 

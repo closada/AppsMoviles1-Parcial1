@@ -1,0 +1,47 @@
+enum class EstadoPedido {
+    Pendiente,
+    EnPreparacion,
+    Enviado,
+    Entregado,
+    Cancelado
+}
+class Pedido(
+    private val clienteAsociado: Cliente,
+    private val fechaPedido: String,
+    private val estado: EstadoPedido,
+    private var montoTotal: Float = 0.0f
+) {
+    private val productosConCantidad = mutableMapOf<Producto, Int>()
+
+    fun agregarProducto(producto: Producto, cantidad: Int = 1) {
+        if (producto.getStock() >= cantidad) {
+            /* la funcion getOfDefault devuelve si existe el producto, la cantidad que tiene actualmente y si no 0. y a eso le suma la cantidad del stock a sumar al pedido */
+            productosConCantidad[producto] = productosConCantidad.getOrDefault(producto, 0) + cantidad
+            producto.disminuirStock(cantidad)
+        } else {
+            println("❌ No se pudo agregar ${producto.getNombre()} x$cantidad. Stock insuficiente.")
+        }
+    }
+
+
+    fun obtenerProductos(): Map<Producto, Int> {
+        return productosConCantidad
+    }
+
+    fun calcularTotal(): Float {
+        var total = 0.0f
+        for ((producto, cantidad) in productosConCantidad) {
+            total += producto.getPrecio() * cantidad
+        }
+        return total
+    }
+
+    fun mostrarPedido() {
+        println("Pedido del cliente: ${clienteAsociado.getNombre()}")
+        productosConCantidad.forEach { (producto, cantidad) ->
+            println("${producto.getNombre()} x $cantidad")
+        }
+        println("Total: ${calcularTotal()}")
+    }
+}
+

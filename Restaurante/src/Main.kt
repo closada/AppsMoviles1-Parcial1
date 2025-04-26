@@ -8,4 +8,3 @@ fun main() {
 
 }
 
-class Pedido(clienteAsociado: Int,date: String){}
