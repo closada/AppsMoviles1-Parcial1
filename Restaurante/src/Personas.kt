@@ -6,7 +6,7 @@ open class Personas(
     private val telefono: String,
     private val email: String
 ) {
-    val id: Int
+    private val id: Int
 
     /* se encarga de sumar el contador cada vez que se crea un nuevo objeto */
     init {
@@ -54,8 +54,6 @@ class Usuarios {
 
     fun agregarUsuario(usuario: Personas) {
         listaUsuarios.add(usuario)
-        println("Usuario agregado: ${usuario.getNombre()}")
-        mostrarUsuarios()
     }
 
     fun getListausuarios(): List<Personas> {
@@ -80,5 +78,62 @@ class Usuarios {
         }
     }
 }
+
+/* este factory crea manualmente el tipo de usuario que se quiera crear - ESTA FUNCIONALIDAD SOLO LO VA A PODER HACER EL USUARIO ADMINISTRADOR */
+object UsuarioFactory {
+
+    fun crearCliente(): Cliente {
+        println("Ingrese nombre:")
+        val nombre = readLine() ?: ""
+        println("Ingrese contraseña:")
+        val pass = readLine() ?: ""
+        println("Ingrese teléfono:")
+        val tel = readLine() ?: ""
+        println("Ingrese email:")
+        val email = readLine() ?: ""
+        return Cliente(nombre, pass, tel, email)
+    }
+
+    fun crearUsuarioComoAdmin(): Personas? {
+        println("Seleccione tipo de usuario a crear:")
+        println("1 - Administrador")
+        println("2 - Vendedor")
+        println("0 - Cancelar")
+
+        return when (readLine()?.toIntOrNull()) {
+            1 -> crearAdministrador()
+            2 -> crearVendedor()
+            else -> {
+                println("Cancelando creación...")
+                null
+            }
+        }
+    }
+
+    private fun crearAdministrador(): Administrador {
+        println("Nombre:")
+        val nombre = readLine() ?: ""
+        println("Contraseña:")
+        val pass = readLine() ?: ""
+        println("Teléfono:")
+        val tel = readLine() ?: ""
+        println("Email:")
+        val email = readLine() ?: ""
+        return Administrador(nombre, pass, tel, email)
+    }
+
+    private fun crearVendedor(): Vendedor {
+        println("Nombre:")
+        val nombre = readLine() ?: ""
+        println("Contraseña:")
+        val pass = readLine() ?: ""
+        println("Teléfono:")
+        val tel = readLine() ?: ""
+        println("Email:")
+        val email = readLine() ?: ""
+        return Vendedor(nombre, pass, tel, email)
+    }
+}
+
 
 

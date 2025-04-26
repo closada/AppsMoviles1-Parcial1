@@ -1,5 +1,5 @@
 fun main() {
-    val name = "Kotlin"
+    /*val name = "Kotlin"
     //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
     // to see how IntelliJ IDEA suggests fixing it.
     println("Hello, " + name + "!")
@@ -7,9 +7,14 @@ fun main() {
     var usuario = Usuarios()
     while(true){
         inicioPantalla(usuario)
-    }
-}
+    }*/
 
+        println("Usuarios precargados en el sistema:")
+        SessionBD.mostrarUsuarios()
+
+
+}
+/*
 fun inicioPantalla(usuario: Usuarios) {
     // iniciar o registrar secion llamando a la funcion que correspodna segun el imput
     // 1 para iniciar sesion
@@ -36,7 +41,7 @@ fun inicioSesion(usuario: Usuarios) {
     //validar el usuario y contraseña guardados en algun arreglo de usuarios
     // con el for hago que pueda recorrer a mano los usuarios guardados
     // utilizo el orEmpty() por si llega hacer null
-    println("Ingrese nombre de usuario:")
+    println("Ingrese email:")
     val nombre = readLine().orEmpty()
     println("Ingrese contraseña:")
     val password = readLine().orEmpty()
@@ -81,5 +86,5 @@ fun registroUsuarioCliente(usuario: Usuarios) {
 
 
 
-
+*/
 class Pedido(clienteAsociado: Int,date: String){}
