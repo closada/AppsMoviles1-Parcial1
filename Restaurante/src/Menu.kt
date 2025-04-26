@@ -124,54 +124,6 @@ fun menuPrincipal() {
     }
 }
 
-fun menuCliente() {
-    while (true) {
-        println("\n--- MENÚ CLIENTE: " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + " ---")
-        println("1 - Hacer un pedido")
-        println("2 - Cancelar un pedido (atencion! solo en estado Pendiente)")
-        println("3 - Modificar un pedido (atencion! solo en estado Pendiente)")
-        println("4 - Ver mis pedidos")
-        println("0 - Cerrar sesión")
-
-        when (readLine()?.toIntOrNull()) {
-            1 -> {
-                println("hecho el pedido!")
-                }
-            2 -> println("cancelado")
-            3 -> println("modificado")
-            4 -> println("vistos")
-            0 -> {
-                cerrarSesion()
-                break
-            }
-            else -> println("Opción inválida")
-        }
-    }
-}
-
-fun menuVendedor() {
-    while (true) {
-        println("\n--- MENÚ VENDEDOR: " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + " ---")
-        println("1 - Crear nuevo producto")
-        println("2 - modificar un producto")
-        println("3 - modificar el estado de un pedido existente")
-        println("0 - Cerrar sesión")
-
-        when (readLine()?.toIntOrNull()) {
-            1 -> {
-                println("creado el producto!")
-                }
-            2 -> println("modificado el producto!")
-            3 -> println("modificar el estado de un pedido")
-            0 -> {
-                cerrarSesion()
-                break
-            }
-            else -> println("Opción inválida")
-        }
-    }
-}
-
 /* funcion para cerrar sesion el usuario logueado */
 fun cerrarSesion() {
     SessionManager.usuarioActual = null
