@@ -27,11 +27,11 @@ object SessionBD {
         sistemaUsuarios.agregarUsuario(admin1)
 
         // Crear productos (algunos sin stock)
-        val producto1 = Producto("Milanesa con papas", 25000f, "Clásica milanesa con guarnición", 10, TipoProducto.PlatoPrincipal)
-        val producto2 = Producto("Ensalada César", 18000f, "Lechuga, pollo, croutons y aderezo", 5, TipoProducto.Entrada)
-        val producto3 = Producto("Coca Cola", 2500f, "Botella 500ml", 5, TipoProducto.Bebida) // sin stock
-        val producto4 = Producto("Flan con dulce", 6200f, "Postre casero", 3, TipoProducto.Postre)
-        val producto5 = Producto("Agua mineral", 1200f, "Botella 500ml", 2, TipoProducto.Bebida)
+        val producto1 = Producto("Milanesa con papas", 25000f, "Clásica milanesa con guarnición", 10, TipoProducto.PlatoPrincipal, 0.1f)
+        val producto2 = Producto("Ensalada César", 18000f, "Lechuga, pollo, croutons y aderezo", 5, TipoProducto.Entrada, 0.1f)
+        val producto3 = Producto("Coca Cola", 2500f, "Botella 500ml", 5, TipoProducto.Bebida, 0.1f) // sin stock
+        val producto4 = Producto("Flan con dulce", 6200f, "Postre casero", 3, TipoProducto.Postre, 0.1f)
+        val producto5 = Producto("Agua mineral", 1200f, "Botella 500ml", 2, TipoProducto.Bebida, 0.1f)
 
         // Agregarlos a la lista de productos
         productosDisponibles.addAll(listOf(producto1, producto2, producto3, producto4, producto5))
@@ -129,11 +129,40 @@ fun menuCliente() {
 
         when (readLine()?.toIntOrNull()) {
             1 -> {
-                println("hecho el pedido!")
+                println("Seleccione un producto para hacer el pedido:")
+                SessionBD.mostrarProductos()
+
+                val idProducto = readLine()?.toIntOrNull()
+
+                if (idProducto != null) {
+                    val productoSeleccionado = SessionBD.productosDisponibles.find { it.getId() == idProducto }
+
+                    if (productoSeleccionado != null && productoSeleccionado.getStock() > 0) {
+                        println("¿Cuántas unidades desea comprar de ${productoSeleccionado.getNombre()}?")
+                        val cantidad = readLine()?.toIntOrNull() ?: 0
+
+                        if (cantidad > 0 && cantidad <= productoSeleccionado.getStock()) {
+                            val pedido = Pedido(SessionManager.usuarioActual as Cliente, "2025-04-25", EstadoPedido.Pendiente)
+                            pedido.agregarProducto(productoSeleccionado, cantidad)
+                            (SessionManager.usuarioActual as Cliente).agregarPedido(pedido)
+                            println("Pedido realizado con éxito.")
+                        } else {
+                            if (cantidad > productoSeleccionado.getStock()) {
+                                println("No hay suficiente stock para la cantidad solicitada. Stock disponible: ${productoSeleccionado.getStock()}.")
+                            } else {
+                                println("Cantidad no válida o no disponible.")
+                            }
+                        }
+                    } else {
+                        println("Producto no encontrado o sin stock.")
+                    }
+                } else {
+                    println("Opción no válida.")
                 }
-            2 -> println("cancelado")
-            3 -> println("modificado")
-            4 -> println("vistos")
+            }
+            2 -> println("Cancelar pedido")
+            3 -> println("Modificar pedido")
+            4 -> println("Ver mis pedidos")
             0 -> {
                 SessionManager.usuarioActual = null
                 println("Sesión de cliente finalizada.")
@@ -143,6 +172,7 @@ fun menuCliente() {
         }
     }
 }
+
 
 fun menuVendedor() {
     while (true) {
@@ -155,7 +185,7 @@ fun menuVendedor() {
         when (readLine()?.toIntOrNull()) {
             1 -> {
                 println("creado el producto!")
-                }
+            }
             2 -> println("modificado el producto!")
             3 -> println("modificar el estado de un pedido")
             0 -> {

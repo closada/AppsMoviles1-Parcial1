@@ -11,7 +11,8 @@ class Producto (
     private var precio: Float = 0.0f,
     private var descripcion: String,
     private var stock: Int,
-    private var tipo: TipoProducto
+    private var tipo: TipoProducto,
+    private val descuento: Float = 0.0f
 ) {
     private val id: Int
 
@@ -27,6 +28,14 @@ class Producto (
     fun getPrecio(): Float = precio
     fun getStock(): Int = stock
 
+    fun getId(): Int {
+        return id
+    }
+
+    fun getPrecioConDescuento(): Float {
+        return precio * (1 - descuento)
+    }
+
     fun disminuirStock(cantidad: Int) {
         if (cantidad <= stock) {
             stock -= cantidad
@@ -40,9 +49,10 @@ class Producto (
         println("ID: $id")
         println("Nombre: $nombre")
         println("Descripción: $descripcion")
-        println("Precio: $precio")
+        println("Precio: $${"%.2f".format(precio)}")
         println("Stock: $stock")
         println("Tipo: $tipo")
+        println("Descuento aplicado: ${"%.2f".format(descuento * 100)}%")
         println("------------")
     }
 }
