@@ -82,38 +82,8 @@ fun menuPrincipal() {
         println("3 - Salir del programa")
 
         when (readLine()?.toIntOrNull()) {
-            1 -> {
-
-                /* iniciar sesion! */
-                print("Ingrese email:")
-                val email = readLine() ?: ""
-                print("Ingrese contraseña:")
-                val pass = readLine() ?: ""
-
-                val usuario = SessionBD.sistemaUsuarios.getListausuarios().find {
-                    it.getEmail() == email && it.getPassword() == pass
-                }
-
-                if (usuario != null) {
-                    SessionManager.usuarioActual = usuario
-                    println("Bienvenido/a ${usuario.getNombre()}!")
-
-                    when (usuario) {
-                        is Administrador -> menuAdministrador()
-                        is Vendedor -> menuVendedor()
-                        is Cliente -> menuCliente()
-                    }
-                } else {
-                    println("Credenciales inválidas.")
-                }
-            }
-
-            2 -> {
-                val nuevoCliente = UsuarioFactory.crearCliente()
-                SessionBD.sistemaUsuarios.agregarUsuario(nuevoCliente)
-                println("Cliente registrado con éxito. Ahora puede iniciar sesión.")
-            }
-
+            1 -> iniciarSesion()
+            2 -> registrarse()
             3 -> {
                 println("¡Gracias por usar el sistema!")
                 break
@@ -128,4 +98,35 @@ fun menuPrincipal() {
 fun cerrarSesion() {
     SessionManager.usuarioActual = null
     println("Sesión finalizada.")
+}
+
+fun registrarse() {
+    val nuevoCliente = UsuarioFactory.crearCliente()
+    SessionBD.sistemaUsuarios.agregarUsuario(nuevoCliente)
+    println("Cliente registrado con éxito. Ahora puede iniciar sesión.")
+}
+
+fun iniciarSesion() {
+    /* iniciar sesion! */
+    print("Ingrese email:")
+    val email = readLine() ?: ""
+    print("Ingrese contraseña:")
+    val pass = readLine() ?: ""
+
+    val usuario = SessionBD.sistemaUsuarios.getListausuarios().find {
+        it.getEmail() == email && it.getPassword() == pass
+    }
+
+    if (usuario != null) {
+        SessionManager.usuarioActual = usuario
+        println("Bienvenido/a ${usuario.getNombre()}!")
+
+        when (usuario) {
+            is Administrador -> menuAdministrador()
+            is Vendedor -> menuVendedor()
+            is Cliente -> menuCliente()
+        }
+    } else {
+        println("Credenciales inválidas.")
+    }
 }
