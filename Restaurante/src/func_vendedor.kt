@@ -217,7 +217,7 @@ fun modificarEstadoPedido() {
         2 ->{
             try {
                 cancelarPedido(pedido)
-            }catch (e: NosePudoCancelar){
+            }catch (e: NosePudoCancelar ){
                 println(e.message)
             }
 

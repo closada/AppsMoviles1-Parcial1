@@ -9,7 +9,6 @@ object SessionBD {
     val sistemaUsuarios = Usuarios()
     val productosDisponibles = mutableListOf<Producto>()
 
-    val listaPedidos = mutableListOf<Pedido>()
 
     init {
         // Crear 2 clientes
@@ -55,8 +54,7 @@ object SessionBD {
         pedido3.agregarProducto(producto5, 1) /* 1 agua*/
         pedido3.agregarProducto(producto3, 3) /* 3 cocas*/
         cliente2.agregarPedido(pedido3)
-
-        listaPedidos.addAll(listOf( pedido1,pedido2,pedido3))
+        
     }
 
     fun mostrarUsuarios() {

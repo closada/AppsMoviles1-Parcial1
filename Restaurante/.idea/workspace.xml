@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b32c3e6e-c137-44a1-b6fc-83e085f2dc03" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Producto.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Producto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Productos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Productos.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/excepciones.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/excepciones.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/func_cliente.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_cliente.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Menu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Menu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/func_vendedor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_vendedor.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
