@@ -7,7 +7,7 @@ enum class TipoProducto {
 }
 
 class Producto (
-    private val nombre: String,
+    private var nombre: String,
     private var precio: Float = 0.0f,
     private var descripcion: String,
     private var stock: Int,
@@ -40,6 +40,35 @@ class Producto (
         } else {
             throw StockInsuficienteException("No hay suficiente stock de $nombre. Disponible: $stock, requerido: $cantidad.")
         }
+    }
+
+    fun setNombre(nuevoNombre: String) {
+        if (nuevoNombre.isNotBlank()) {
+            // (opcionalmente podrías validar otras cosas)
+            this.nombre = nuevoNombre
+        }
+    }
+
+    fun setPrecio(nuevoPrecio: Float) {
+        if (nuevoPrecio >= 0) {
+            this.precio = nuevoPrecio
+        }
+    }
+
+    fun setDescripcion(nuevaDescripcion: String) {
+        if (nuevaDescripcion.isNotBlank()) {
+            this.descripcion = nuevaDescripcion
+        }
+    }
+
+    fun setStock(nuevoStock: Int) {
+        if (nuevoStock >= 0) {
+            this.stock = nuevoStock
+        }
+    }
+
+    fun setTipo(nuevoTipo: TipoProducto) {
+        this.tipo = nuevoTipo
     }
 
 

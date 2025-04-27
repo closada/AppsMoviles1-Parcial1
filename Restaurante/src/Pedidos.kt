@@ -43,6 +43,10 @@ class Pedido(
         return productosConCantidad.isEmpty()
     }
 
+    fun cambiarEstado(nuevoEstado: EstadoPedido) {
+        estado = nuevoEstado
+    }
+
 
     fun agregarProducto(producto: Producto, cantidad: Int = 1) {
         try {
