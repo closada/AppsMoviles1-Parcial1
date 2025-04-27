@@ -153,21 +153,6 @@ fun modificarEstadoPedido() {
     if (pedido == null) {
         throw PedidoNoEncontradoException("⚠ Producto no encontrado.")
     }
-    //al siguiente estado o canselado
-    /*println("Seleccione el estado a cambiar \n"+
-            "    Pendiente marque 1,\n" +
-            "    EnPreparacion marque 2,\n" +
-            "    Enviado marque 3,\n" +
-            "    Entregado marque 4,\n" +
-            "    Cancelado marque 5,\n" +
-            "    Cancelar accion marque 0")
-    when(readLine()?.toIntOrNull()){
-        1 -> pedido?.cambiarEstado(EstadoPedido.Pendiente)
-        2 -> pedido?.cambiarEstado(EstadoPedido.EnPreparacion)
-        3 -> pedido?.cambiarEstado(EstadoPedido.Enviado)
-        4 -> pedido?.cambiarEstado(EstadoPedido.Entregado)
-        5 -> pedido?.cambiarEstado(EstadoPedido.Cancelado)
-        0 -> println("Modificación cancelada.")*/
     println("Seleccione el estado a cambiar \n" +
             "(Pendiente -> EnPreparacion -> Enviado -> Entregado) \n" +
             "    Siguiente estado marque 1,\n" +

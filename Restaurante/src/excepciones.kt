@@ -15,3 +15,6 @@ class PedidoNoEncontradoException(message: String) : Exception(message)
 
 // ESTADO NO CANSEABLE
 class NosePudoCanselar(message: String) : Exception(message)
+
+// EMAIL NO VALIDO
+class EmailNoValido(message: String) : Exception(message)

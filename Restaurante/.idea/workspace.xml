@@ -5,25 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b32c3e6e-c137-44a1-b6fc-83e085f2dc03" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Cliente.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Cliente.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_administradorKt$ClientesConPedidos$$inlined$sortedByDescending$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Func_administradorKt$ClientesConPedidos$$inlined$sortedByDescending$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_administradorKt$PedidosxCliente$$inlined$sortedBy$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Func_administradorKt$PedidosxCliente$$inlined$sortedBy$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_administradorKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Func_administradorKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/META-INF/Restaurante.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/MenuKt.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Pedido.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Pedido.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Producto.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Producto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/SessionBD.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/SessionManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Restaurante/UsuarioFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/UsuarioFactory.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Usuarios.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Usuarios.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Menu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Menu.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pedidos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pedidos.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Personas.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Personas.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/excepciones.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/excepciones.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/func_administrador.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_administrador.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/func_vendedor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_vendedor.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,9 +46,9 @@
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/mmang/Desktop/UCES/12-Martes-Desarrollo-Diseño-Movile/parcial1/AppsMoviles1-Parcial1/Restaurante",
     "onboarding.tips.debug.path": "D:/TECN EN SISTEMAS (UCES)/Apps Moviles 1/parcial1/AppsMoviles1-Parcial1/Restaurante/src/Main.kt",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
