@@ -39,6 +39,7 @@ class Pedido(
 
     fun getFechaPedido() : String = fechaPedido
     fun getEstado(): EstadoPedido = estado
+    fun getId(): Int = id
     fun estaVacio(): Boolean {
         return productosConCantidad.isEmpty()
     }

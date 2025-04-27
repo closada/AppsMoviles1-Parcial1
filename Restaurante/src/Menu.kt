@@ -9,6 +9,8 @@ object SessionBD {
     val sistemaUsuarios = Usuarios()
     val productosDisponibles = mutableListOf<Producto>()
 
+    val listaPedidos = mutableListOf<Pedido>()
+
     init {
         // Crear 2 clientes
         val cliente1 = Cliente("Sofía", "clave1", "1111111111", "sofia@email.com")
@@ -54,6 +56,7 @@ object SessionBD {
         pedido3.agregarProducto(producto3, 3) /* 3 cocas*/
         cliente2.agregarPedido(pedido3)
 
+        listaPedidos.addAll(listOf( pedido1,pedido2,pedido3))
     }
 
     fun mostrarUsuarios() {
@@ -71,11 +74,19 @@ object SessionBD {
             .flatMap { it.obtenerPedidos() } // sus pedidos
     }
 
-
     fun mostrarPedidosCliente(cliente: Cliente) {
         println("----- PEDIDOS DE ${cliente.getNombre()} -----")
         cliente.obtenerPedidos().forEach { it.mostrarPedido() }
     }
+
+    fun mostrarPedido() {
+        println("----- TODOS LOS PEDIDOS -----")
+        sistemaUsuarios.getListausuarios()
+            .filterIsInstance<Cliente>() // solo los clientes
+            .forEach { mostrarPedidosCliente(it) } // sus pedidos
+    }
+
+
 
 }
 

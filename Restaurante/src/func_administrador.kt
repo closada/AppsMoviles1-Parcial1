@@ -20,6 +20,7 @@ fun menuAdministrador() {
             else -> println("Opción inválida")
         }
     }
+    
 }
 
 /* funciones de cada una de las opciones del menu */

@@ -9,3 +9,9 @@ class StockInsuficienteException(message: String) : Exception(message)
 
 // PRODUCTO NO ENCONTRADO
 class ProductoNoEncontradoException(message: String) : Exception(message)
+
+// PEDIDO NO ENCONTRADO
+class PedidoNoEncontradoException(message: String) : Exception(message)
+
+// ESTADO NO CANSEABLE
+class NosePudoCanselar(message: String) : Exception(message)

@@ -140,6 +140,72 @@ fun modificarProducto() {
 }
 
 fun modificarEstadoPedido() {
-    println("cambiado")
+    // mostrar la lista de pedidos
+    // eleguir uno de los pedidos
+    // modificar su estado
+
+    SessionBD.mostrarPedido()
+    println("Ingrese el ID del Pedido que desea modificar:")
+    val idPedido = readLine()?.toIntOrNull()
+
+    val pedido = SessionBD.obtenerTodosLosPedidos().find { it.getId() == idPedido }
+
+    if (pedido == null) {
+        throw PedidoNoEncontradoException("⚠ Producto no encontrado.")
+    }
+    //al siguiente estado o canselado
+    /*println("Seleccione el estado a cambiar \n"+
+            "    Pendiente marque 1,\n" +
+            "    EnPreparacion marque 2,\n" +
+            "    Enviado marque 3,\n" +
+            "    Entregado marque 4,\n" +
+            "    Cancelado marque 5,\n" +
+            "    Cancelar accion marque 0")
+    when(readLine()?.toIntOrNull()){
+        1 -> pedido?.cambiarEstado(EstadoPedido.Pendiente)
+        2 -> pedido?.cambiarEstado(EstadoPedido.EnPreparacion)
+        3 -> pedido?.cambiarEstado(EstadoPedido.Enviado)
+        4 -> pedido?.cambiarEstado(EstadoPedido.Entregado)
+        5 -> pedido?.cambiarEstado(EstadoPedido.Cancelado)
+        0 -> println("Modificación cancelada.")*/
+    println("Seleccione el estado a cambiar \n" +
+            "(Pendiente -> EnPreparacion -> Enviado -> Entregado) \n" +
+            "    Siguiente estado marque 1,\n" +
+            "    Cancelado marque 2,\n" +
+            "    Cancelar accion marque 0")
+    when(readLine()?.toIntOrNull()){
+        1 -> {
+            val estados = EstadoPedido.values()
+            val estadoActual = pedido?.getEstado()
+            if (estadoActual != null) {
+                val siguienteIndice = estadoActual.ordinal + 1
+                if (siguienteIndice < estados.size - 1) {
+                    pedido?.cambiarEstado(estados[siguienteIndice])   // pasa al siguiente
+                } else {
+                    println("⚠ Ya estás en el último estado.")
+                }
+            }
+
+        }
+        2 ->{
+            try {
+                canselarPedido(pedido)
+            }catch (e: NosePudoCanselar){
+                println(e.message)
+            }
+
+        }
+        0 -> println("Modificación cancelada.")
+        else -> println("⚠ Opción inválida.")
+    }
+
+
 }
 
+fun canselarPedido(pedido:Pedido){
+    if(pedido.getEstado()==EstadoPedido.Pendiente){
+        pedido?.cambiarEstado(EstadoPedido.Cancelado)
+    }else{
+        throw NosePudoCanselar("⚠ no se encuentra en estado Pendiente, para ser Canselado");
+    }
+}
