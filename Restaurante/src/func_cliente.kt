@@ -43,40 +43,85 @@ fun clienteHacePedido() {
     val pedido = Pedido(cliente, fechaActual, EstadoPedido.Pendiente)
 
     println("👉 Vamos a armar tu pedido. Podés agregar varios productos.")
+    var totalParcial = 0.0f
+
     while (true) {
         println("\nProductos disponibles:")
         SessionBD.productosDisponibles
             .filter { it.getStock() > 0 }
-            .forEach { println("ID: ${it.getId()} | Nombre: ${it.getNombre()} | Stock: ${it.getStock()}") }
+            .forEach {
+                println("ID: ${it.getId()} | Nombre: ${it.getNombre()} | Precio: $${"%.2f".format(it.getPrecioConDescuento())} | Stock: ${it.getStock()}")
+            }
 
-        println("📦 Ingresá el ID del producto que querés agregar (o 0 para terminar):")
-        val idProducto = readLine()?.toIntOrNull() ?: throw ProductoNoEncontradoException("ID inválido.")
+        println("\n📦 Ingresá el ID del producto que querés agregar:")
+        println("(0 para terminar el pedido, -1 para cancelar todo y salir)")
+        val idProducto = readLine()?.toIntOrNull() ?: run {
+            println("⚠ Entrada inválida. Cancelando operación.")
+            return
+        }
 
-        if (idProducto == 0) {
-            break
+        when (idProducto) {
+            -1 -> {
+                println("❌ Pedido cancelado por el usuario.")
+                return
+            }
+            0 -> {
+                break
+            }
         }
 
         val productoSeleccionado = SessionBD.productosDisponibles
             .filter { it.getStock() > 0 }
             .find { it.getId() == idProducto }
-            ?: throw ProductoNoEncontradoException("Producto no encontrado o sin stock.")
 
-        println("🔢 ¿Cuántas unidades de ${productoSeleccionado.getNombre()} querés agregar?")
-        val cantidad = readLine()?.toIntOrNull() ?: throw StockInsuficienteException("Cantidad inválida.")
-
-        if (cantidad <= 0) {
-            throw StockInsuficienteException("Debe ingresar una cantidad mayor a 0.")
+        if (productoSeleccionado == null) {
+            println("⚠ Producto no encontrado o sin stock.")
+            continue
         }
+
+        println("🔢 ¿Cuántas unidades de ${productoSeleccionado.getNombre()} querés agregar? (0 para cancelar este producto)")
+        val cantidad = readLine()?.toIntOrNull() ?: run {
+            println("⚠ Entrada inválida. Cancelando operación.")
+            return
+        }
+
+        if (cantidad == 0) {
+            println("✅ No se agregó ninguna unidad de este producto.")
+            continue
+        }
+
+        if (cantidad < 0) {
+            println("⚠ La cantidad debe ser mayor a 0.")
+            continue
+        }
+
         if (cantidad > productoSeleccionado.getStock()) {
-            throw StockInsuficienteException("Stock insuficiente. Solo quedan ${productoSeleccionado.getStock()}.")
+            println("⚠ Stock insuficiente. Solo quedan ${productoSeleccionado.getStock()}.")
+            continue
         }
 
         pedido.agregarProducto(productoSeleccionado, cantidad)
-        println("✅ Producto agregado al pedido.")
+        val subtotalProducto = productoSeleccionado.getPrecioConDescuento() * cantidad
+        totalParcial += subtotalProducto
+
+        println("✅ ${cantidad}x ${productoSeleccionado.getNombre()} agregados al pedido. Subtotal: $${"%.2f".format(subtotalProducto)}")
+        println("🧾 Total parcial actual: $${"%.2f".format(totalParcial)}")
     }
 
     if (pedido.estaVacio()) {
         println("⚠ No agregaste ningún producto. Pedido cancelado.")
+        return
+    }
+
+    // Mostrar resumen completo antes de confirmar
+    println("\n🧾 RESUMEN DE TU PEDIDO:")
+    pedido.mostrarPedido()
+    println("💵 Total a pagar (sin forma de pago aplicada todavía): $${"%.2f".format(totalParcial)}")
+
+    println("\n¿Deseás confirmar este pedido? (S para confirmar / cualquier otra tecla para cancelar)")
+    val confirmacion = readLine()?.trim()?.lowercase()
+    if (confirmacion != "s") {
+        println("❌ Pedido cancelado.")
         return
     }
 
@@ -96,6 +141,7 @@ fun clienteHacePedido() {
     pedido.elegirFormaDePago(formaDePagoSeleccionada)
     cliente.agregarPedido(pedido)
 
-    println("\n🎉 Pedido realizado exitosamente. Detalles:")
+    println("\n🎉 Pedido confirmado exitosamente. Detalles finales:")
     pedido.mostrarPedido()
 }
+

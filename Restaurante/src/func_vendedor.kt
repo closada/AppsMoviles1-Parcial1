@@ -4,6 +4,7 @@ fun menuVendedor() {
         println("1 - Crear nuevo producto")
         println("2 - Modificar un producto existente")
         println("3 - Modificar el estado de un pedido existente")
+        println("4 - Ver todos los pedidos")
         println("0 - Cerrar sesión")
 
         when (readLine()?.toIntOrNull()) {
@@ -15,6 +16,7 @@ fun menuVendedor() {
             }
             }
             3 -> modificarEstadoPedido()
+            4 -> SessionBD.mostrarPedido()
             0 -> {
                 cerrarSesion()
                 break
@@ -53,11 +55,21 @@ fun crearNuevoProducto() {
         return
     }
 
-    val nuevoProducto = Producto(nombre, precio, descripcion, stock, tipoSeleccionado)
+    println("Ingrese el descuento (en porcentaje, por ejemplo 20 para 20%):")
+    val descuentoPorcentaje = readLine()?.toFloatOrNull()
+    val descuento = if (descuentoPorcentaje != null && descuentoPorcentaje in 0.0..100.0) {
+        descuentoPorcentaje / 100f // lo pasamos a decimal
+    } else {
+        println("⚠ Descuento inválido. Se aplicará 0%.")
+        0.0f
+    }
+
+    val nuevoProducto = Producto(nombre, precio, descripcion, stock, tipoSeleccionado, descuento)
     SessionBD.productosDisponibles.add(nuevoProducto)
 
     println("✅ Producto '${nuevoProducto.getNombre()}' creado con éxito.")
 }
+
 
 fun modificarProducto() {
     SessionBD.mostrarProductos()
@@ -77,7 +89,9 @@ fun modificarProducto() {
     println("3 - Descripción")
     println("4 - Stock")
     println("5 - Tipo de producto")
+    println("6 - Descuento")
     println("0 - Cancelar")
+
 
     when (readLine()?.toIntOrNull()) {
         1 -> {
@@ -130,6 +144,19 @@ fun modificarProducto() {
                 println("✅ Tipo de producto actualizado.")
             } else {
                 println("⚠ Tipo inválido.")
+            }
+        }
+
+        6 -> {
+            print("Ingrese el nuevo descuento (en porcentaje, por ejemplo 20 para 20%): ")
+            val nuevoDescuentoPorcentaje = readLine()?.toFloatOrNull()
+            if (nuevoDescuentoPorcentaje != null && nuevoDescuentoPorcentaje in 0.0..100.0) {
+                // Como en tu clase Producto el descuento es val (inmutable),
+                // para cambiarlo deberías agregar un setter en la clase Producto
+                producto.setDescuento(nuevoDescuentoPorcentaje / 100f)
+                println("✅ Descuento actualizado.")
+            } else {
+                println("⚠ Descuento inválido.")
             }
         }
 
@@ -189,8 +216,8 @@ fun modificarEstadoPedido() {
         }
         2 ->{
             try {
-                canselarPedido(pedido)
-            }catch (e: NosePudoCanselar){
+                cancelarPedido(pedido)
+            }catch (e: NosePudoCancelar){
                 println(e.message)
             }
 
@@ -202,10 +229,10 @@ fun modificarEstadoPedido() {
 
 }
 
-fun canselarPedido(pedido:Pedido){
+fun cancelarPedido(pedido:Pedido){
     if(pedido.getEstado()==EstadoPedido.Pendiente){
         pedido?.cambiarEstado(EstadoPedido.Cancelado)
     }else{
-        throw NosePudoCanselar("⚠ no se encuentra en estado Pendiente, para ser Canselado");
+        throw NosePudoCancelar("⚠ no se encuentra en estado Pendiente, para ser Canselado");
     }
 }
