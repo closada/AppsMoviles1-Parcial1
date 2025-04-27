@@ -28,7 +28,6 @@ open class Personas(
 
 class Administrador (nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
 class Vendedor(nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)
-
 /* la clase cliente suma el listado de pedidos dentro de su composicion */
 class Cliente(
     nombre: String,
