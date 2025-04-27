@@ -65,10 +65,18 @@ object SessionBD {
         productosDisponibles.forEach { it.mostrarProducto() }
     }
 
+    fun obtenerTodosLosPedidos(): List<Pedido> {
+        return sistemaUsuarios.getListausuarios()
+            .filterIsInstance<Cliente>() // solo los clientes
+            .flatMap { it.obtenerPedidos() } // sus pedidos
+    }
+
+
     fun mostrarPedidosCliente(cliente: Cliente) {
         println("----- PEDIDOS DE ${cliente.getNombre()} -----")
         cliente.obtenerPedidos().forEach { it.mostrarPedido() }
     }
+
 }
 
 
