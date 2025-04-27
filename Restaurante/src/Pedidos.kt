@@ -39,6 +39,10 @@ class Pedido(
 
     fun getFechaPedido() : String = fechaPedido
     fun getEstado(): EstadoPedido = estado
+    fun estaVacio(): Boolean {
+        return productosConCantidad.isEmpty()
+    }
+
 
     fun agregarProducto(producto: Producto, cantidad: Int = 1) {
         try {
@@ -96,6 +100,6 @@ class Pedido(
 
         // mostrar el total del pedido con descuento aplicado
         val total = calcularTotal()
-        println("Total con descuento: $${"%.2f".format(total)}")
+        println("Total con descuento: $${"%.2f".format(total)}\n")
     }
 }

@@ -36,30 +36,52 @@ fun menuCliente() {
 }
 
 fun clienteHacePedido() {
-    println("Seleccione un producto para hacer el pedido:")
-    SessionBD.productosDisponibles
-        .filter { it.getStock() > 0 }
-        .forEach { println("ID: ${it.getId()} | Nombre: ${it.getNombre()} | Stock: ${it.getStock()}") }
+    val cliente = SessionManager.usuarioActual as? Cliente
+        ?: throw Exception("Usuario actual no es un cliente.")
 
-    val idProducto = readLine()?.toIntOrNull() ?: throw ProductoNoEncontradoException("ID de producto inválido.")
+    val fechaActual = LocalDate.now().toString()
+    val pedido = Pedido(cliente, fechaActual, EstadoPedido.Pendiente)
 
-    val productoSeleccionado = SessionBD.productosDisponibles
-        .filter { it.getStock() > 0 }
-        .find { it.getId() == idProducto }
-        ?: throw ProductoNoEncontradoException("Producto no encontrado o sin stock disponible.")
+    println("👉 Vamos a armar tu pedido. Podés agregar varios productos.")
+    while (true) {
+        println("\nProductos disponibles:")
+        SessionBD.productosDisponibles
+            .filter { it.getStock() > 0 }
+            .forEach { println("ID: ${it.getId()} | Nombre: ${it.getNombre()} | Stock: ${it.getStock()}") }
 
-    println("¿Cuántas unidades desea comprar de ${productoSeleccionado.getNombre()}?")
-    val cantidad = readLine()?.toIntOrNull() ?: throw StockInsuficienteException("Cantidad inválida.")
+        println("📦 Ingresá el ID del producto que querés agregar (o 0 para terminar):")
+        val idProducto = readLine()?.toIntOrNull() ?: throw ProductoNoEncontradoException("ID inválido.")
 
-    if (cantidad <= 0) {
-        throw StockInsuficienteException("Debe ingresar una cantidad mayor a 0.")
+        if (idProducto == 0) {
+            break
+        }
+
+        val productoSeleccionado = SessionBD.productosDisponibles
+            .filter { it.getStock() > 0 }
+            .find { it.getId() == idProducto }
+            ?: throw ProductoNoEncontradoException("Producto no encontrado o sin stock.")
+
+        println("🔢 ¿Cuántas unidades de ${productoSeleccionado.getNombre()} querés agregar?")
+        val cantidad = readLine()?.toIntOrNull() ?: throw StockInsuficienteException("Cantidad inválida.")
+
+        if (cantidad <= 0) {
+            throw StockInsuficienteException("Debe ingresar una cantidad mayor a 0.")
+        }
+        if (cantidad > productoSeleccionado.getStock()) {
+            throw StockInsuficienteException("Stock insuficiente. Solo quedan ${productoSeleccionado.getStock()}.")
+        }
+
+        pedido.agregarProducto(productoSeleccionado, cantidad)
+        println("✅ Producto agregado al pedido.")
     }
-    if (cantidad > productoSeleccionado.getStock()) {
-        throw StockInsuficienteException("No hay suficiente stock para la cantidad solicitada. Disponible: ${productoSeleccionado.getStock()}.")
+
+    if (pedido.estaVacio()) {
+        println("⚠ No agregaste ningún producto. Pedido cancelado.")
+        return
     }
 
-    // Mostrar opciones de forma de pago
-    println("Seleccione una forma de pago:")
+    // Selección de forma de pago
+    println("\n💳 Seleccioná una forma de pago:")
     FormaDePago.values().forEachIndexed { index, forma ->
         println("${index + 1} - ${forma.name}")
     }
@@ -67,19 +89,13 @@ fun clienteHacePedido() {
     val formaDePagoSeleccionada = if (opcionPago != null && opcionPago in 1..FormaDePago.values().size) {
         FormaDePago.values()[opcionPago - 1]
     } else {
-        println("⚠ Forma de pago no válida, se asignará EFECTIVO por defecto.")
+        println("⚠ Forma de pago no válida. Se asignará EFECTIVO por defecto.")
         FormaDePago.EFECTIVO
     }
 
-    // Crear el pedido
-    val cliente = SessionManager.usuarioActual as? Cliente
-        ?: throw Exception("Usuario actual no es un cliente.")
-
-    val fechaActual = LocalDate.now().toString() // 🗓️ fecha de hoy en formato YYYY-MM-DD
-    val pedido = Pedido(cliente, fechaActual, EstadoPedido.Pendiente)
-    pedido.agregarProducto(productoSeleccionado, cantidad)
     pedido.elegirFormaDePago(formaDePagoSeleccionada)
     cliente.agregarPedido(pedido)
 
-    println("✅ Pedido realizado con éxito.")
+    println("\n🎉 Pedido realizado exitosamente. Detalles:")
+    pedido.mostrarPedido()
 }
