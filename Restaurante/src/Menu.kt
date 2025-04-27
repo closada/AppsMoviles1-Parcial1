@@ -48,6 +48,12 @@ object SessionBD {
         pedido2.agregarProducto(producto3, 1) /* 1 coca */
         cliente2.agregarPedido(pedido2)
 
+        val pedido3 = Pedido(cliente2, "2025-04-25", EstadoPedido.Pendiente)
+        pedido3.agregarProducto(producto1, 4) /* 4 milanesas */
+        pedido3.agregarProducto(producto5, 1) /* 1 agua*/
+        pedido3.agregarProducto(producto3, 3) /* 3 cocas*/
+        cliente2.agregarPedido(pedido3)
+
     }
 
     fun mostrarUsuarios() {
@@ -76,37 +82,9 @@ fun menuPrincipal() {
         println("3 - Salir del programa")
 
         when (readLine()?.toIntOrNull()) {
-            1 -> {
+            1 -> iniciarSesion()
 
-                /* iniciar sesion! */
-                print("Ingrese email:")
-                val email = readLine() ?: ""
-                print("Ingrese contraseña:")
-                val pass = readLine() ?: ""
-
-                val usuario = SessionBD.sistemaUsuarios.getListausuarios().find {
-                    it.getEmail() == email && it.getPassword() == pass
-                }
-
-                if (usuario != null) {
-                    SessionManager.usuarioActual = usuario
-                    println("Bienvenido/a ${usuario.getNombre()}!")
-
-                    when (usuario) {
-                        is Administrador -> menuAdministrador()
-                        is Vendedor -> menuVendedor()
-                        is Cliente -> menuCliente()
-                    }
-                } else {
-                    println("Credenciales inválidas.")
-                }
-            }
-
-            2 -> {
-                val nuevoCliente = UsuarioFactory.crearCliente()
-                SessionBD.sistemaUsuarios.agregarUsuario(nuevoCliente)
-                println("Cliente registrado con éxito. Ahora puede iniciar sesión.")
-            }
+            2 -> registrarse()
 
             3 -> {
                 println("¡Gracias por usar el sistema!")
@@ -118,112 +96,41 @@ fun menuPrincipal() {
     }
 }
 
-fun menuCliente() {
-    while (true) {
-        println("\n--- MENÚ CLIENTE: " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + " ---")
-        println("1 - Hacer un pedido")
-        println("2 - Cancelar un pedido (atencion! solo en estado Pendiente)")
-        println("3 - Modificar un pedido (atencion! solo en estado Pendiente)")
-        println("4 - Ver mis pedidos")
-        println("0 - Cerrar sesión")
+fun iniciarSesion() {
+    /* iniciar sesion! */
+    print("Ingrese email:")
+    val email = readLine() ?: ""
+    print("Ingrese contraseña:")
+    val pass = readLine() ?: ""
 
-        when (readLine()?.toIntOrNull()) {
-            1 -> {
-                println("Seleccione un producto para hacer el pedido:")
-                SessionBD.mostrarProductos()
+    val usuario = SessionBD.sistemaUsuarios.getListausuarios().find {
+        it.getEmail() == email && it.getPassword() == pass
+    }
 
-                val idProducto = readLine()?.toIntOrNull()
+    if (usuario != null) {
+        SessionManager.usuarioActual = usuario
+        println("Bienvenido/a ${usuario.getNombre()}!")
 
-                if (idProducto != null) {
-                    val productoSeleccionado = SessionBD.productosDisponibles.find { it.getId() == idProducto }
-
-                    if (productoSeleccionado != null && productoSeleccionado.getStock() > 0) {
-                        println("¿Cuántas unidades desea comprar de ${productoSeleccionado.getNombre()}?")
-                        val cantidad = readLine()?.toIntOrNull() ?: 0
-
-                        if (cantidad > 0 && cantidad <= productoSeleccionado.getStock()) {
-                            val pedido = Pedido(SessionManager.usuarioActual as Cliente, "2025-04-25", EstadoPedido.Pendiente)
-                            pedido.agregarProducto(productoSeleccionado, cantidad)
-                            (SessionManager.usuarioActual as Cliente).agregarPedido(pedido)
-                            println("Pedido realizado con éxito.")
-                        } else {
-                            if (cantidad > productoSeleccionado.getStock()) {
-                                println("No hay suficiente stock para la cantidad solicitada. Stock disponible: ${productoSeleccionado.getStock()}.")
-                            } else {
-                                println("Cantidad no válida o no disponible.")
-                            }
-                        }
-                    } else {
-                        println("Producto no encontrado o sin stock.")
-                    }
-                } else {
-                    println("Opción no válida.")
-                }
-            }
-            2 -> println("Cancelar pedido")
-            3 -> println("Modificar pedido")
-            4 -> println("Ver mis pedidos")
-            0 -> {
-                SessionManager.usuarioActual = null
-                println("Sesión de cliente finalizada.")
-                break
-            }
-            else -> println("Opción inválida")
+        when (usuario) {
+            is Administrador -> menuAdministrador()
+            is Vendedor -> menuVendedor()
+            is Cliente -> menuCliente()
         }
+    } else {
+        println("Credenciales inválidas.")
     }
 }
 
-
-fun menuVendedor() {
-    while (true) {
-        println("\n--- MENÚ VENDEDOR: " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + " ---")
-        println("1 - Crear nuevo producto")
-        println("2 - modificar un producto")
-        println("3 - modificar el estado de un pedido existente")
-        println("0 - Cerrar sesión")
-
-        when (readLine()?.toIntOrNull()) {
-            1 -> {
-                println("creado el producto!")
-            }
-            2 -> println("modificado el producto!")
-            3 -> println("modificar el estado de un pedido")
-            0 -> {
-                SessionManager.usuarioActual = null
-                println("Sesión de vendedor finalizada.")
-                break
-            }
-            else -> println("Opción inválida")
-        }
-    }
+/* funcion para cerrar sesion el usuario logueado */
+fun cerrarSesion() {
+    SessionManager.usuarioActual = null
+    println("Sesión finalizada.")
 }
-fun menuAdministrador() {
-    while (true) {
-        println("\n--- MENÚ ADMINISTRADOR " + (SessionManager.usuarioActual?.getNombre() ?: "N/A") + "---")
-        println("1 - Crear nuevo usuario (admin o vendedor)")
-        println("2 - Eliminar un usuario (admin o vendedor)")
-        println("3 - Ver todos los usuarios")
-        println("4 - Ver reportes")
-        println("0 - Cerrar sesión")
 
-        when (readLine()?.toIntOrNull()) {
-            1 -> {
-                val nuevoUsuario = UsuarioFactory.crearUsuarioComoAdmin()
-                if (nuevoUsuario != null) {
-                    SessionBD.sistemaUsuarios.agregarUsuario(nuevoUsuario)
-                }
-            }
-            2 -> println("eliminado el usuario!")
-            3 -> SessionBD.sistemaUsuarios.mostrarUsuarios()
-            4 -> println("armar submenu con 3 opciones de reportes: 1) Listar los pedidos de un cliente, ordenados por fecha.\n" +
-                    "Reportar cuáles clientes hicieron más de un pedido.\n" +
-                    "Mostrar total recaudado por productos vendidos (suma de precios de productos en pedidos entregados).\n")
-            0 -> {
-                SessionManager.usuarioActual = null
-                println("Sesión de administrador finalizada.")
-                break
-            }
-            else -> println("Opción inválida")
-        }
-    }
+fun registrarse() {
+    val nuevoCliente = UsuarioFactory.crearCliente()
+    SessionBD.sistemaUsuarios.agregarUsuario(nuevoCliente)
+    println("Cliente registrado con éxito. Ahora puede iniciar sesión.")
 }
+
+

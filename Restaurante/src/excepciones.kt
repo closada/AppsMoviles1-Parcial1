@@ -6,3 +6,6 @@ class NoSePuedeEliminarASiMismoException(message: String) : Exception(message)
 
 // STOCK INSUFICIENTE EN PRODUCTO
 class StockInsuficienteException(message: String) : Exception(message)
+
+// PRODUCTO NO ENCONTRADO
+class ProductoNoEncontradoException(message: String) : Exception(message)

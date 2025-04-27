@@ -27,10 +27,8 @@ class Producto (
     fun getNombre(): String = nombre
     fun getPrecio(): Float = precio
     fun getStock(): Int = stock
+    fun getId(): Int = id
 
-    fun getId(): Int {
-        return id
-    }
 
     fun getPrecioConDescuento(): Float {
         return precio * (1 - descuento)
@@ -45,7 +43,6 @@ class Producto (
     }
 
 
-
     fun mostrarProducto() {
         println("ID: $id")
         println("Nombre: $nombre")
@@ -53,7 +50,13 @@ class Producto (
         println("Precio: $${"%.2f".format(precio)}")
         println("Stock: $stock")
         println("Tipo: $tipo")
+
+        // Mostrar el descuento en porcentaje (por ejemplo, 20% en vez de 0.2)
         println("Descuento aplicado: ${"%.2f".format(descuento * 100)}%")
+
+        // Mostrar el precio con descuento
+        println("Precio con descuento: $${"%.2f".format(getPrecioConDescuento())}")
+
         println("------------")
     }
 }

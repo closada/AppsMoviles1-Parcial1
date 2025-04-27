@@ -6,41 +6,92 @@ enum class EstadoPedido {
     Cancelado
 }
 
+/* enum para la realizar la forma de pago */
+enum class FormaDePago {
+    EFECTIVO,
+    TARJETA_CREDITO,
+    TARJETA_DEBITO,
+    MERCADO_PAGO
+}
+
 class Pedido(
     private val clienteAsociado: Cliente,
     private val fechaPedido: String,
-    private var estado: EstadoPedido
+    private var estado: EstadoPedido,
+    private var montoTotal: Float = 0.0f,
+    private var formaDePago: FormaDePago? = null
+
+
 ) {
     private val productosConCantidad = mutableMapOf<Producto, Int>()
+    private val id: Int
 
-    //  aca se agrega productos al pedido, asegurándose de que haya suficiente stock
+    /* se encarga de sumar el contador cada vez que se crea un nuevo objeto */
+    init {
+        id = ++contadorIds
+    }
+
+    /* es una instancia unica que puede almacenar informacion que sean COMUNES EN TODAS LAS INSTANCIAS DE LA CLASE*/
+    companion object {
+        private var contadorIds = 0
+    }
+
+
+    fun getFechaPedido() : String = fechaPedido
+    fun getEstado(): EstadoPedido = estado
+    fun estaVacio(): Boolean {
+        return productosConCantidad.isEmpty()
+    }
+
+
     fun agregarProducto(producto: Producto, cantidad: Int = 1) {
-        if (producto.getStock() >= cantidad) {
-            // se suma la cantidad al pedido
-            productosConCantidad[producto] = productosConCantidad.getOrDefault(producto, 0) + cantidad
+        try {
+            // Intenta disminuir el stock, si hay un error, lo lanza
             producto.disminuirStock(cantidad)
-        } else {
-            println("❌ No se pudo agregar ${producto.getNombre()} x$cantidad. Stock insuficiente.")
+
+            // Si se pudo disminuir el stock, agregamos el producto al pedido
+            productosConCantidad[producto] = productosConCantidad.getOrDefault(producto, 0) + cantidad
+        } catch (e: StockInsuficienteException) {
+            println("❌ No se pudo agregar ${producto.getNombre()} x$cantidad. ${e.message}")
         }
     }
 
-    // se calcula el total del pedido con descuentos aplicados
+
     fun calcularTotal(): Float {
         var total = 0.0f
+
+        // Mostrar pedidos de productos
+        //println("Detalle de su pedido:")
         for ((producto, cantidad) in productosConCantidad) {
-            total += producto.getPrecioConDescuento() * cantidad
+            val precioConDescuento = producto.getPrecioConDescuento()
+            val precioTotalProducto = precioConDescuento * cantidad
+            //println("${producto.getNombre()} x$cantidad: \$${"%.2f".format(precioConDescuento)} c/u - Total: \$${"%.2f".format(precioTotalProducto)}")
+            total += precioTotalProducto
         }
-        // aplica el descuento del cliente (si tiene)
+
+        // Obtener descuento por cliente
         val descuentoCliente = clienteAsociado.getDescuentoCliente()
-        return total * (1 - descuentoCliente)
+        val totalConDescuento = total * (1 - descuentoCliente)
+
+        // Mostrar el descuento aplicado y el total final
+        //println("Descuento aplicado por ser cliente: ${"%.2f".format(descuentoCliente * 100)}%")
+        //println("El monto total a pagar es: \$${"%.2f".format(totalConDescuento)}")
+
+        montoTotal = totalConDescuento
+        return totalConDescuento
     }
+
+    fun elegirFormaDePago(forma: FormaDePago) {
+        formaDePago = forma
+    }
+
 
     // mostrar el pedido con todos los detalles, incluyendo el total con descuento aplicado
     fun mostrarPedido() {
-        println("Pedido del cliente: ${clienteAsociado.getNombre()}")
+        println("Nro del pedido: $id")
         println("Fecha del pedido: $fechaPedido")
         println("Estado: $estado")
-
+        println("Forma de pago: ${formaDePago ?: "No definida"}")
         // mostrar productos con sus cantidades y precios con descuento
         productosConCantidad.forEach { (producto, cantidad) ->
             val precioConDescuento = producto.getPrecioConDescuento()
@@ -49,49 +100,6 @@ class Pedido(
 
         // mostrar el total del pedido con descuento aplicado
         val total = calcularTotal()
-        println("Total con descuento: $${"%.2f".format(total)}")
-    }
-}
-
-fun realizarPedido(cliente: Cliente, productosDisponibles: List<Producto>) {
-    println("----- REALIZAR PEDIDO -----")
-
-    val nuevoPedido = Pedido(
-        clienteAsociado = cliente,
-        fechaPedido = java.time.LocalDate.now().toString(),   //Te da la fecha actual como texto
-        estado = EstadoPedido.Pendiente
-    )
-
-    var seguirAgregando = true
-
-    while (seguirAgregando) {
-        println("Productos disponibles:")
-        productosDisponibles.forEachIndexed { index, producto ->
-            println("${index + 1}. ${producto.getNombre()} - $${"%.2f".format(producto.getPrecio())} - Stock: ${producto.getStock()}")
-        }
-
-        print("Ingrese el número del producto que desea agregar (o 0 para finalizar): ")
-        val seleccion = readLine()?.toIntOrNull()
-
-        if (seleccion == null || seleccion !in 1..productosDisponibles.size) {
-            if (seleccion == 0) {
-                seguirAgregando = false
-            } else {
-                println("❌ Selección inválida. Intente de nuevo.")
-            }
-        } else {
-            val productoSeleccionado = productosDisponibles[seleccion - 1]
-            print("Ingrese la cantidad que desea: ")
-            val cantidad = readLine()?.toIntOrNull() ?: 1
-            nuevoPedido.agregarProducto(productoSeleccionado, cantidad)
-        }
-    }
-
-    if (nuevoPedido.calcularTotal() > 0) {
-        cliente.agregarPedido(nuevoPedido)
-        println("✅ Pedido realizado exitosamente.")
-        nuevoPedido.mostrarPedido()
-    } else {
-        println("❌ No se agregó ningún producto al pedido. Pedido cancelado.")
+        println("Total con descuento: $${"%.2f".format(total)}\n")
     }
 }
