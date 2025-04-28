@@ -1,0 +1,281 @@
+Index: src/Personas.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//esta clase hereda a todos los tipos de usuarios la id mail usuario y contraseña\r\n// para poder guardarlos despues en una coleccion y poder iniciar sesion\r\nopen class Personas(\r\n    private val nombre: String,\r\n    private val password: String = \"1234\",\r\n    private val telefono: String,\r\n    private val email: String\r\n) {\r\n    private val id: Int\r\n\r\n    /* se encarga de sumar el contador cada vez que se crea un nuevo objeto */\r\n    init {\r\n        id = ++contadorIds\r\n    }\r\n\r\n    /* es una instancia unica que puede almacenar informacion que sean COMUNES EN TODAS LAS INSTANCIAS DE LA CLASE*/\r\n    companion object {\r\n        private var contadorIds = 0\r\n    }\r\n\r\n    fun getId(): Int = id\r\n    fun getNombre(): String = nombre\r\n    fun getPassword(): String = password\r\n    fun getTelefono(): String = telefono\r\n    fun getEmail(): String = email\r\n}\r\n\r\n\r\nclass Administrador (nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)\r\nclass Vendedor(nombre: String,password: String,tel: String, email: String): Personas(nombre,password,tel,email)\r\n/* la clase cliente suma el listado de pedidos dentro de su composicion */\r\nclass Cliente(\r\n    nombre: String,\r\n    password: String,\r\n    tel: String,\r\n    email: String\r\n) : Personas(nombre, password, tel, email) {\r\n\r\n    private val listaDePedidos = mutableListOf<Pedido>()\r\n\r\n    fun agregarPedido(pedido: Pedido) {\r\n        listaDePedidos.add(pedido)\r\n    }\r\n\r\n    fun obtenerPedidos(): List<Pedido> {\r\n        return listaDePedidos\r\n    }\r\n\r\n    fun obtenerTotaldePedidos(): Float {\r\n        var total = 0.0f\r\n        for (pedido in listaDePedidos) {\r\n            total += pedido.calcularTotal()\r\n        }\r\n        return total\r\n    }\r\n\r\n    fun getDescuentoCliente(): Float {\r\n        return if (listaDePedidos.size > 3) 0.05f else 0.0f\r\n    }\r\n\r\n}\r\n\r\n/* Clase Usuarios que guarda el listado de usuarios de cualquier tipo */\r\nclass Usuarios {\r\n    private val listaUsuarios = mutableListOf<Personas>()\r\n\r\n    fun agregarUsuario(usuario: Personas) {\r\n        listaUsuarios.add(usuario)\r\n    }\r\n\r\n    fun getListausuarios(): List<Personas> {\r\n        return listaUsuarios\r\n    }\r\n\r\n    fun mostrarUsuarios() {\r\n        println(\"----- LISTA DE USUARIOS -----\")\r\n        listaUsuarios.forEach { usuario ->\r\n            val tipo = when (usuario) {\r\n                is Cliente -> \"Cliente\"\r\n                is Vendedor -> \"Vendedor\"\r\n                is Administrador -> \"Administrador\"\r\n                else -> \"Desconocido\"\r\n            }\r\n\r\n            println(\"Tipo: $tipo\")\r\n            println(\"Nombre: ${usuario.getNombre()}\")\r\n            println(\"Email: ${usuario.getEmail()}\")\r\n            println(\"Teléfono: ${usuario.getTelefono()}\")\r\n            println(\"-----------------------------\")\r\n        }\r\n    }\r\n\r\n    fun eliminarUsuarioPorEmail(email: String) {\r\n        if (email == (SessionManager.usuarioActual?.getEmail() ?: \"\")) {\r\n            throw NoSePuedeEliminarASiMismoException(\"No puedes eliminarte a ti mismo.\")\r\n        }\r\n\r\n        val usuarioAEliminar = listaUsuarios.find { it.getEmail() == email }\r\n        if (usuarioAEliminar != null) {\r\n            listaUsuarios.remove(usuarioAEliminar)\r\n            println(\"✅ Usuario con email $email eliminado correctamente.\")\r\n        } else {\r\n            throw UsuarioNoEncontradoException(\"No se encontró un usuario con el email: $email\")\r\n        }\r\n    }\r\n\r\n}\r\n\r\n/* este factory crea manualmente el tipo de usuario que se quiera crear - ESTA FUNCIONALIDAD SOLO LO VA A PODER HACER EL USUARIO ADMINISTRADOR */\r\nobject UsuarioFactory {\r\n\r\n    fun crearCliente(): Cliente {\r\n        print(\"Ingrese nombre:\")\r\n        val nombre = readLine() ?: \"\"\r\n        print(\"Ingrese contraseña:\")\r\n        val pass = readLine() ?: \"\"\r\n        print(\"Ingrese teléfono:\")\r\n        val tel = readLine() ?: \"\"\r\n        print(\"Ingrese email:\")\r\n        val email = readLine() ?: \"\"\r\n        return Cliente(nombre, pass, tel, email)\r\n    }\r\n\r\n    fun crearUsuarioComoAdmin(): Personas? {\r\n        println(\"Seleccione tipo de usuario a crear:\")\r\n        println(\"1 - Administrador\")\r\n        println(\"2 - Vendedor\")\r\n        println(\"0 - Cancelar\")\r\n\r\n        return when (readLine()?.toIntOrNull()) {\r\n            1 -> crearAdministrador()\r\n            2 -> crearVendedor()\r\n            else -> {\r\n                println(\"Cancelando creación...\")\r\n                null\r\n            }\r\n        }\r\n    }\r\n\r\n    private fun crearAdministrador(): Administrador {\r\n        print(\"Nombre:\")\r\n        val nombre = readLine() ?: \"\"\r\n        print(\"Contraseña:\")\r\n        val pass = readLine() ?: \"\"\r\n        print(\"Teléfono:\")\r\n        val tel = readLine() ?: \"\"\r\n        print(\"Email:\")\r\n        val email = readLine() ?: \"\"\r\n        return Administrador(nombre, pass, tel, email)\r\n    }\r\n\r\n    private fun crearVendedor(): Vendedor {\r\n        print(\"Nombre:\")\r\n        val nombre = readLine() ?: \"\"\r\n        print(\"Contraseña:\")\r\n        val pass = readLine() ?: \"\"\r\n        print(\"Teléfono:\")\r\n        val tel = readLine() ?: \"\"\r\n        print(\"Email:\")\r\n        val email = readLine() ?: \"\"\r\n        return Vendedor(nombre, pass, tel, email)\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Personas.kt b/src/Personas.kt
+--- a/src/Personas.kt	(revision 35b083d57c9e14e7786aef6473db4b851f4fcad8)
++++ b/src/Personas.kt	(date 1745800140314)
+@@ -109,15 +109,68 @@
+ /* este factory crea manualmente el tipo de usuario que se quiera crear - ESTA FUNCIONALIDAD SOLO LO VA A PODER HACER EL USUARIO ADMINISTRADOR */
+ object UsuarioFactory {
+ 
++    fun esEmailValido(email: String): Boolean {
++        val regex = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$".toRegex()
++        return regex.matches(email)
++    }
++
++    fun textoSeguro(entrada: String): Boolean {
++        val regex = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ@._ -]*$".toRegex()
++        return regex.matches(entrada)
++    }
++
+     fun crearCliente(): Cliente {
++        var email:String = ""
++        var pass:String = ""
++        var nombre:String = ""
++        var tel:String = ""
++
++        var emailValido=false
++        var textoValido=false
++        print("Ingrese email:")
++
++        while(!emailValido){
++            email = readLine() ?: ""
++            if(esEmailValido(email)){
++                emailValido=true;
++            }else{
++                println("email no valido")
++            }
++        }
++
++
++        textoValido=false
++        print("Ingrese contraseña:")
++        while(!textoValido){
++            pass = readLine() ?: ""
++            if(textoSeguro(pass)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
++
++        textoValido=false
+         print("Ingrese nombre:")
+-        val nombre = readLine() ?: ""
+-        print("Ingrese contraseña:")
+-        val pass = readLine() ?: ""
++        while(!textoValido){
++            nombre = readLine() ?: ""
++            if(textoSeguro(nombre)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
++
++        textoValido=false
+         print("Ingrese teléfono:")
+-        val tel = readLine() ?: ""
+-        print("Ingrese email:")
+-        val email = readLine() ?: ""
++        while(!textoValido){
++            tel = readLine() ?: ""
++            if(textoSeguro(tel)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
+         return Cliente(nombre, pass, tel, email)
+     }
+ 
+@@ -138,26 +191,112 @@
+     }
+ 
+     private fun crearAdministrador(): Administrador {
+-        print("Nombre:")
+-        val nombre = readLine() ?: ""
+-        print("Contraseña:")
+-        val pass = readLine() ?: ""
+-        print("Teléfono:")
+-        val tel = readLine() ?: ""
+-        print("Email:")
+-        val email = readLine() ?: ""
++        var email:String = ""
++        var pass:String = ""
++        var nombre:String = ""
++        var tel:String = ""
++
++        var emailValido=false
++        var textoValido=false
++        print("Ingrese email:")
++
++        while(!emailValido){
++            email = readLine() ?: ""
++            if(esEmailValido(email)){
++                emailValido=true;
++            }else{
++                println("email no valido")
++            }
++        }
++
++
++        textoValido=false
++        print("Ingrese contraseña:")
++        while(!textoValido){
++            pass = readLine() ?: ""
++            if(textoSeguro(pass)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
++
++        textoValido=false
++        print("Ingrese nombre:")
++        while(!textoValido){
++            nombre = readLine() ?: ""
++            if(textoSeguro(nombre)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
++
++        textoValido=false
++        print("Ingrese teléfono:")
++        while(!textoValido){
++            tel = readLine() ?: ""
++            if(textoSeguro(tel)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
+         return Administrador(nombre, pass, tel, email)
+     }
+ 
+     private fun crearVendedor(): Vendedor {
+-        print("Nombre:")
+-        val nombre = readLine() ?: ""
+-        print("Contraseña:")
+-        val pass = readLine() ?: ""
+-        print("Teléfono:")
+-        val tel = readLine() ?: ""
+-        print("Email:")
+-        val email = readLine() ?: ""
++        var email:String = ""
++        var pass:String = ""
++        var nombre:String = ""
++        var tel:String = ""
++
++        var emailValido=false
++        var textoValido=false
++        print("Ingrese email:")
++
++        while(!emailValido){
++            email = readLine() ?: ""
++            if(esEmailValido(email)){
++                emailValido=true;
++            }else{
++                println("email no valido")
++            }
++        }
++
++
++        textoValido=false
++        print("Ingrese contraseña:")
++        while(!textoValido){
++            pass = readLine() ?: ""
++            if(textoSeguro(pass)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
++
++        textoValido=false
++        print("Ingrese nombre:")
++        while(!textoValido){
++            nombre = readLine() ?: ""
++            if(textoSeguro(nombre)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
++
++        textoValido=false
++        print("Ingrese teléfono:")
++        while(!textoValido){
++            tel = readLine() ?: ""
++            if(textoSeguro(tel)){
++                textoValido=true;
++            }else{
++                println("datos no valido, reintete otra vez")
++            }
++        }
+         return Vendedor(nombre, pass, tel, email)
+     }
+ }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"b32c3e6e-c137-44a1-b6fc-83e085f2dc03\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/out/production/Restaurante/MenuKt.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/out/production/Restaurante/MenuKt.class\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/out/production/Restaurante/Pedido.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/out/production/Restaurante/Pedido.class\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/out/production/Restaurante/SessionBD.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/out/production/Restaurante/SessionBD.class\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Menu.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Menu.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Pedidos.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Pedidos.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Productos.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Productos.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/excepciones.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/excepciones.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/func_cliente.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/func_cliente.kt\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/func_vendedor.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/func_vendedor.kt\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Kotlin File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$/..\" />\r\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 1\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2wB9ETd2R1FL4vsldWRcjCvZvxu\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/mmang/Desktop/UCES/12-Martes-Desarrollo-Diseño-Movile/parcial1/AppsMoviles1-Parcial1/Restaurante&quot;,\r\n    &quot;onboarding.tips.debug.path&quot;: &quot;D:/TECN EN SISTEMAS (UCES)/Apps Moviles 1/parcial1/AppsMoviles1-Parcial1/Restaurante/src/Main.kt&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"b32c3e6e-c137-44a1-b6fc-83e085f2dc03\" name=\"Changes\" comment=\"\" />\r\n      <created>1745503989834</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1745503989834</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 35b083d57c9e14e7786aef6473db4b851f4fcad8)
++++ b/.idea/workspace.xml	(date 1745800174982)
+@@ -7,6 +7,7 @@
+     <list default="true" id="b32c3e6e-c137-44a1-b6fc-83e085f2dc03" name="Changes" comment="">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" afterDir="false" />
++<<<<<<< HEAD
+       <change beforePath="$PROJECT_DIR$/out/production/Restaurante/MenuKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/MenuKt.class" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Pedido.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Pedido.class" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/out/production/Restaurante/SessionBD.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/SessionBD.class" afterDir="false" />
+@@ -15,6 +16,12 @@
+       <change beforePath="$PROJECT_DIR$/src/Productos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Productos.kt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/excepciones.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/excepciones.kt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/func_cliente.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_cliente.kt" afterDir="false" />
++=======
++      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/UsuarioFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/UsuarioFactory.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Usuarios.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Usuarios.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Personas.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Personas.kt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/excepciones.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/excepciones.kt" afterDir="false" />
++>>>>>>> 453c54c48074d080ee49dd36f004917fb226e44f
+       <change beforePath="$PROJECT_DIR$/src/func_vendedor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_vendedor.kt" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -41,21 +48,21 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;C:/Users/mmang/Desktop/UCES/12-Martes-Desarrollo-Diseño-Movile/parcial1/AppsMoviles1-Parcial1/Restaurante&quot;,
+-    &quot;onboarding.tips.debug.path&quot;: &quot;D:/TECN EN SISTEMAS (UCES)/Apps Moviles 1/parcial1/AppsMoviles1-Parcial1/Restaurante/src/Main.kt&quot;,
+-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "Kotlin.MainKt.executor": "Run",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "git-widget-placeholder": "main",
++    "kotlin-language-version-configured": "true",
++    "last_opened_file_path": "C:/Users/mmang/Desktop/UCES/12-Martes-Desarrollo-Diseño-Movile/parcial1/AppsMoviles1-Parcial1/Restaurante",
++    "onboarding.tips.debug.path": "D:/TECN EN SISTEMAS (UCES)/Apps Moviles 1/parcial1/AppsMoviles1-Parcial1/Restaurante/src/Main.kt",
++    "project.structure.last.edited": "Project",
++    "project.structure.proportion": "0.15",
++    "project.structure.side.proportion": "0.2",
++    "settings.editor.selected.configurable": "preferences.lookFeel"
+   }
+-}</component>
++}]]></component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+     <task active="true" id="Default" summary="Default task">

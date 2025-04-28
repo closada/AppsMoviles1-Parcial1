@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b32c3e6e-c137-44a1-b6fc-83e085f2dc03" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Func_vendedorKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/MenuKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/MenuKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/Pedido.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/Pedido.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Restaurante/SessionBD.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Restaurante/SessionBD.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Menu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Menu.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pedidos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pedidos.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Productos.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Productos.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/excepciones.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/excepciones.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/func_cliente.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_cliente.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/func_vendedor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/func_vendedor.kt" afterDir="false" />
-    </list>
+    <list default="true" id="b32c3e6e-c137-44a1-b6fc-83e085f2dc03" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

@@ -109,15 +109,68 @@ class Usuarios {
 /* este factory crea manualmente el tipo de usuario que se quiera crear - ESTA FUNCIONALIDAD SOLO LO VA A PODER HACER EL USUARIO ADMINISTRADOR */
 object UsuarioFactory {
 
+    fun esEmailValido(email: String): Boolean {
+        val regex = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$".toRegex()
+        return regex.matches(email)
+    }
+
+    fun textoSeguro(entrada: String): Boolean {
+        val regex = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ@._ -]*$".toRegex()
+        return regex.matches(entrada)
+    }
+
     fun crearCliente(): Cliente {
-        print("Ingrese nombre:")
-        val nombre = readLine() ?: ""
-        print("Ingrese contraseña:")
-        val pass = readLine() ?: ""
-        print("Ingrese teléfono:")
-        val tel = readLine() ?: ""
+        var email:String = ""
+        var pass:String = ""
+        var nombre:String = ""
+        var tel:String = ""
+
+        var emailValido=false
+        var textoValido=false
         print("Ingrese email:")
-        val email = readLine() ?: ""
+
+        while(!emailValido){
+            email = readLine() ?: ""
+            if(esEmailValido(email)){
+                emailValido=true;
+            }else{
+                println("email no valido")
+            }
+        }
+
+
+        textoValido=false
+        print("Ingrese contraseña:")
+        while(!textoValido){
+            pass = readLine() ?: ""
+            if(textoSeguro(pass)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
+
+        textoValido=false
+        print("Ingrese nombre:")
+        while(!textoValido){
+            nombre = readLine() ?: ""
+            if(textoSeguro(nombre)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
+
+        textoValido=false
+        print("Ingrese teléfono:")
+        while(!textoValido){
+            tel = readLine() ?: ""
+            if(textoSeguro(tel)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
         return Cliente(nombre, pass, tel, email)
     }
 
@@ -138,26 +191,112 @@ object UsuarioFactory {
     }
 
     private fun crearAdministrador(): Administrador {
-        print("Nombre:")
-        val nombre = readLine() ?: ""
-        print("Contraseña:")
-        val pass = readLine() ?: ""
-        print("Teléfono:")
-        val tel = readLine() ?: ""
-        print("Email:")
-        val email = readLine() ?: ""
+        var email:String = ""
+        var pass:String = ""
+        var nombre:String = ""
+        var tel:String = ""
+
+        var emailValido=false
+        var textoValido=false
+        print("Ingrese email:")
+
+        while(!emailValido){
+            email = readLine() ?: ""
+            if(esEmailValido(email)){
+                emailValido=true;
+            }else{
+                println("email no valido")
+            }
+        }
+
+
+        textoValido=false
+        print("Ingrese contraseña:")
+        while(!textoValido){
+            pass = readLine() ?: ""
+            if(textoSeguro(pass)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
+
+        textoValido=false
+        print("Ingrese nombre:")
+        while(!textoValido){
+            nombre = readLine() ?: ""
+            if(textoSeguro(nombre)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
+
+        textoValido=false
+        print("Ingrese teléfono:")
+        while(!textoValido){
+            tel = readLine() ?: ""
+            if(textoSeguro(tel)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
         return Administrador(nombre, pass, tel, email)
     }
 
     private fun crearVendedor(): Vendedor {
-        print("Nombre:")
-        val nombre = readLine() ?: ""
-        print("Contraseña:")
-        val pass = readLine() ?: ""
-        print("Teléfono:")
-        val tel = readLine() ?: ""
-        print("Email:")
-        val email = readLine() ?: ""
+        var email:String = ""
+        var pass:String = ""
+        var nombre:String = ""
+        var tel:String = ""
+
+        var emailValido=false
+        var textoValido=false
+        print("Ingrese email:")
+
+        while(!emailValido){
+            email = readLine() ?: ""
+            if(esEmailValido(email)){
+                emailValido=true;
+            }else{
+                println("email no valido")
+            }
+        }
+
+
+        textoValido=false
+        print("Ingrese contraseña:")
+        while(!textoValido){
+            pass = readLine() ?: ""
+            if(textoSeguro(pass)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
+
+        textoValido=false
+        print("Ingrese nombre:")
+        while(!textoValido){
+            nombre = readLine() ?: ""
+            if(textoSeguro(nombre)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
+
+        textoValido=false
+        print("Ingrese teléfono:")
+        while(!textoValido){
+            tel = readLine() ?: ""
+            if(textoSeguro(tel)){
+                textoValido=true;
+            }else{
+                println("datos no valido, reintete otra vez")
+            }
+        }
         return Vendedor(nombre, pass, tel, email)
     }
 }

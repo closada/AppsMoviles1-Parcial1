@@ -1,0 +1,18 @@
+<changelist name="Uncommitted_changes_before_Update_at_27_04_2025_21_29_[Changes]" date="1745800189226" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_21_29_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 27/04/2025 21:29 [Changes]" />
+  <binary>
+    <option name="AFTER_PATH" value="out/production/Restaurante/EmailNoValido.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_21_29_[Changes]/EmailNoValido.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/Restaurante/Usuarios.class" />
+    <option name="AFTER_PATH" value="out/production/Restaurante/Usuarios.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_21_29_[Changes]/Usuarios.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/Restaurante/UsuarioFactory.class" />
+    <option name="AFTER_PATH" value="out/production/Restaurante/UsuarioFactory.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_04_2025_21_29_[Changes]/UsuarioFactory.class" />
+  </binary>
+</changelist>
