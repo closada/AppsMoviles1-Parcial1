@@ -22,9 +22,28 @@ fun menuCliente() {
                     println("❌ Error inesperado: ${e.message}")
                 }
             }
-            2 -> println("Cancelar pedido")
-            3 -> println("Modificar pedido")
-            4 -> println("Ver mis pedidos")
+            2 -> {
+                try {
+                    clienteCancelaPedido()
+                }catch(e: PedidoNoEncontradoException) {println(e.message)}
+
+                catch(e: NosePudoCancelar) {println(e.message)}
+            }
+            3 -> {
+                try {
+                    clienteModificaPedido()
+                }catch(e: PedidoNoEncontradoException) {println(e.message)}
+
+                catch(e: NoSePuedeModificarPedidoException) {println(e.message)}
+            }
+            4 -> {
+                try {
+                    clienteVerSusPedidos()
+                } catch(e: UsuarioNoEncontradoException)
+                {
+                    println(e.message)
+                }
+            }
             0 -> {
                 SessionManager.usuarioActual = null
                 println("Sesión de cliente finalizada.")
@@ -145,3 +164,160 @@ fun clienteHacePedido() {
     pedido.mostrarPedido()
 }
 
+fun clienteCancelaPedido() {
+
+    val usuarioActual = SessionManager.usuarioActual
+    if (usuarioActual !is Cliente) {
+        println("❌ Solo los clientes pueden cancelar pedidos.")
+        return
+    }
+
+    val pedidos = usuarioActual.obtenerPedidos()
+
+    if (pedidos.isEmpty()) {
+        println("⚠ No tienes pedidos para cancelar.")
+        return
+    }
+
+    println("\n----- TUS PEDIDOS -----")
+    val pedidosOrdenados = pedidos.sortedBy { it.getFechaPedido() }
+    pedidosOrdenados.forEach { pedido ->
+        println("ID: ${pedido.getId()} - Estado: ${pedido.getEstado()} - Fecha: ${pedido.getFechaPedido()}")
+    }
+
+    println("Seleccione el número del pedido a cancelar:")
+
+    val idPedido = readLine()?.toIntOrNull()
+
+    val pedidoSeleccionado = pedidos.find { it.getId() == idPedido }
+
+
+    if (pedidoSeleccionado == null) {
+        throw PedidoNoEncontradoException("⚠ Pedido no encontrado.")
+    }
+
+    if (pedidoSeleccionado.getEstado() == EstadoPedido.Pendiente)
+    {
+        pedidoSeleccionado.cancelarPedido()
+        println("Pedido cancelado con éxito.")
+    }
+     else {
+         throw NosePudoCancelar("No se puede cancelar un pedido que no esté en estado Pendiente.")
+     }
+}
+
+fun clienteModificaPedido() {
+    val usuarioActual = SessionManager.usuarioActual
+    if (usuarioActual !is Cliente) {
+        println("❌ Solo los clientes pueden modificar pedidos.")
+        return
+    }
+
+    val pedidos = usuarioActual.obtenerPedidos()
+
+    if (pedidos.isEmpty()) {
+        println("⚠ No tienes pedidos para modificar.")
+        return
+    }
+
+    println("\n----- TUS PEDIDOS -----")
+    val pedidosOrdenados = pedidos.sortedBy { it.getFechaPedido() }
+    pedidosOrdenados.forEach { pedido ->
+        println("ID: ${pedido.getId()} - Estado: ${pedido.getEstado()} - Fecha: ${pedido.getFechaPedido()}")
+    }
+
+    println("\nSeleccione el número del pedido a modificar:")
+    val idPedido = readLine()?.toIntOrNull()
+
+    val pedidoSeleccionado = pedidos.find { it.getId() == idPedido }
+
+
+    if (pedidoSeleccionado == null) {
+        throw PedidoNoEncontradoException("⚠ Pedido no encontrado.")
+    }
+
+    if (pedidoSeleccionado.getEstado() != EstadoPedido.Pendiente) {
+        throw NoSePuedeModificarPedidoException("⚠ No se puede modificar un pedido que no esté en estado Pendiente.")
+    }
+
+    println("¿Qué desea modificar en el pedido?")
+    println("1 - Modificar cantidad de productos")
+    println("2 - Modificar forma de pago")
+    val opcionModificar = readLine()?.toIntOrNull()
+
+    when (opcionModificar) {
+        1 -> {
+            println("\nProductos en tu pedido:")
+            val productos = pedidoSeleccionado.obtenerProductos()
+
+            if (productos.isEmpty()) {
+                println("⚠ El pedido no tiene productos para modificar.")
+                return
+            }
+
+            productos.forEachIndexed { index, producto ->
+                println("${index + 1} - ${producto.getNombre()} (Cantidad: ${pedidoSeleccionado.obtenerCantidadProducto(producto)})")
+            }
+
+            println("\nIngrese el número del producto que desea modificar:")
+            val opcionProducto = readLine()?.toIntOrNull()
+
+            if (opcionProducto == null || opcionProducto !in 1..productos.size) {
+                println("⚠ Producto no válido.")
+                return
+            }
+
+            val productoSeleccionado = productos[opcionProducto - 1]
+
+            println("Ingrese la nueva cantidad para ${productoSeleccionado.getNombre()} (0 para eliminarlo):")
+            val nuevaCantidad = readLine()?.toIntOrNull()
+
+            if (nuevaCantidad == null || nuevaCantidad < 0) {
+                println("⚠ Cantidad no válida.")
+                return
+            }
+
+            try {
+                pedidoSeleccionado.modificarCantidadProducto(productoSeleccionado, nuevaCantidad)
+            } catch (e: NoSePuedeModificarPedidoException) {
+                println(e.message)
+            }
+        }
+        2 -> {
+            println("Seleccione la nueva forma de pago:")
+            FormaDePago.values().forEachIndexed { index, forma ->
+                println("${index + 1} - ${forma.name}")
+            }
+            val nuevaFormaPago = readLine()?.toIntOrNull()
+
+            if (nuevaFormaPago != null && nuevaFormaPago in 1..FormaDePago.values().size) {
+                pedidoSeleccionado.elegirFormaDePago(FormaDePago.values()[nuevaFormaPago - 1])
+                println("✅ Forma de pago modificada con éxito.")
+            } else {
+                println("⚠ Opción de forma de pago no válida.")
+            }
+        }
+        else -> println("⚠ Opción no válida.")
+    }
+}
+
+fun clienteVerSusPedidos() {
+    val usuarioActual = SessionManager.usuarioActual
+    if (usuarioActual !is Cliente) {
+        println("❌ Solo los clientes pueden ver sus pedidos.")
+        return
+    }
+
+    val pedidos = usuarioActual.obtenerPedidos()
+
+    if (pedidos.isEmpty()) {
+        println("No tienes pedidos registrados.")
+        return
+    }
+
+    println("\n----- TUS PEDIDOS -----")
+    val pedidosOrdenados = pedidos.sortedBy { it.getFechaPedido() }
+    pedidosOrdenados.forEach { pedido ->
+        pedido.mostrarPedido()
+    }
+}

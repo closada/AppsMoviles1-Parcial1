@@ -54,7 +54,7 @@ object SessionBD {
         pedido3.agregarProducto(producto5, 1) /* 1 agua*/
         pedido3.agregarProducto(producto3, 3) /* 3 cocas*/
         cliente2.agregarPedido(pedido3)
-        
+
     }
 
     fun mostrarUsuarios() {

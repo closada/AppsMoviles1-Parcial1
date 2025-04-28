@@ -15,3 +15,6 @@ class PedidoNoEncontradoException(message: String) : Exception(message)
 
 // ESTADO NO CANCEABLE
 class NosePudoCancelar(message: String) : Exception(message)
+
+// PEDIDO NO SE PUEDE MODIFICAR
+class NoSePuedeModificarPedidoException (message: String) : Exception(message)

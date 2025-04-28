@@ -78,6 +78,9 @@ class Producto (
     }
 
 
+    fun aumentarStock(cantidad: Int) {
+        stock += cantidad
+    }
 
 
     fun mostrarProducto() {

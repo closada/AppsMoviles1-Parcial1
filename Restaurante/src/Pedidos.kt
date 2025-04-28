@@ -97,14 +97,75 @@ class Pedido(
         println("Fecha del pedido: $fechaPedido")
         println("Estado: $estado")
         println("Forma de pago: ${formaDePago ?: "No definida"}")
-        // mostrar productos con sus cantidades y precios con descuento
-        productosConCantidad.forEach { (producto, cantidad) ->
-            val precioConDescuento = producto.getPrecioConDescuento()
-            println("${producto.getNombre()} x $cantidad - Precio con descuento: $${"%.2f".format(precioConDescuento)}")
-        }
+        mostrarProductosdelPedido()
 
         // mostrar el total del pedido con descuento aplicado
         val total = calcularTotal()
         println("Total con descuento: $${"%.2f".format(total)}\n")
     }
+
+    fun mostrarProductosdelPedido() {
+        // mostrar productos con sus cantidades y precios con descuento
+        productosConCantidad.forEach { (producto, cantidad) ->
+            val precioConDescuento = producto.getPrecioConDescuento()
+            println("${producto.getNombre()} x $cantidad - Precio con descuento: $${"%.2f".format(precioConDescuento)}")
+        }
+    }
+    // Metodo para cancelar un pedido
+    fun cancelarPedido() {
+        if (estado == EstadoPedido.Pendiente) {
+            /* modificar estado*/
+            estado = EstadoPedido.Cancelado
+
+            // Devolver el stock de todos los productos del pedido
+            productosConCantidad.forEach { (producto, cantidad) ->
+                producto.aumentarStock(cantidad)
+            }
+
+        } else {
+            throw NosePudoCancelar("No se puede cancelar un pedido que no está en estado Pendiente.")
+        }
+    }
+
+    // Metodo para obtener la lista de productos en el pedido
+    fun obtenerProductos(): List<Producto> {
+        return productosConCantidad.keys.toList()  // Devuelve solo los productos
+    }
+
+
+    // Modificar la cantidad de un producto en el pedido
+    fun modificarCantidadProducto(producto: Producto, nuevaCantidad: Int) {
+        if (productosConCantidad.containsKey(producto)) {
+            val cantidadActual = productosConCantidad[producto] ?: 0
+            val diferencia = nuevaCantidad - cantidadActual
+
+            if (nuevaCantidad <= 0) {
+                // Si la nueva cantidad es 0 o menos, eliminar el producto del pedido
+                eliminarProducto(producto)
+                println("Producto eliminado del pedido: ${producto.getNombre()}")
+                return
+            }
+
+            if (producto.getStock() >= diferencia) {
+                productosConCantidad[producto] = nuevaCantidad
+                producto.disminuirStock(diferencia)
+                println("✅ Producto actualizado: ${producto.getNombre()} x$nuevaCantidad")
+            } else {
+                throw NoSePuedeModificarPedidoException("❌ No se puede modificar. Stock insuficiente.")
+            }
+        } else {
+            throw NoSePuedeModificarPedidoException("❌ El producto no está en el pedido.")
+        }
+    }
+
+    // Eliminar un producto del pedido
+    fun eliminarProducto(producto: Producto) {
+        productosConCantidad.remove(producto)
+    }
+
+    fun obtenerCantidadProducto(producto: Producto): Int {
+        return productosConCantidad[producto] ?: 0
+    }
+
+
 }
