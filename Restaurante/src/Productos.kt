@@ -12,7 +12,7 @@ class Producto (
     private var descripcion: String,
     private var stock: Int,
     private var tipo: TipoProducto,
-    private val descuento: Float = 0.0f
+    private var descuento: Float = 0.0f
 ) {
     private val id: Int
 
@@ -70,6 +70,14 @@ class Producto (
     fun setTipo(nuevoTipo: TipoProducto) {
         this.tipo = nuevoTipo
     }
+
+    fun setDescuento(nuevoDescuento: Float) {
+        if (nuevoDescuento in 0.0f..1.0f) {
+            this.descuento = nuevoDescuento
+        }
+    }
+
+
 
 
     fun mostrarProducto() {
