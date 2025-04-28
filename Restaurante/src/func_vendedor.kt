@@ -4,7 +4,8 @@ fun menuVendedor() {
         println("1 - Crear nuevo producto")
         println("2 - Modificar un producto existente")
         println("3 - Modificar el estado de un pedido existente")
-        println("4 - Ver todos los pedidos")
+        println("4 - Ver todos los productos")
+        println("5 - Ver todos los pedidos")
         println("0 - Cerrar sesión")
 
         when (readLine()?.toIntOrNull()) {
@@ -15,8 +16,16 @@ fun menuVendedor() {
                 println(e.message)
             }
             }
-            3 -> modificarEstadoPedido()
-            4 -> SessionBD.mostrarPedido()
+            3 -> {
+                try {
+                    modificarEstadoPedido()
+                } catch(e: PedidoNoEncontradoException) {
+                    println(e.message)
+                }
+            }
+
+            4 -> SessionBD.mostrarProductos()
+            5 -> SessionBD.mostrarPedido()
             0 -> {
                 cerrarSesion()
                 break
@@ -168,50 +177,50 @@ fun modificarProducto() {
 
 fun modificarEstadoPedido() {
     // mostrar la lista de pedidos
-    // elegir uno de los pedidos
-    // modificar su estado
-
     SessionBD.mostrarPedido()
+
     println("Ingrese el ID del Pedido que desea modificar:")
     val idPedido = readLine()?.toIntOrNull()
 
-    val pedido = SessionBD.obtenerTodosLosPedidos().find { it.getId() == idPedido }
-
-    if (pedido == null) {
-        throw PedidoNoEncontradoException("⚠ Pedido no encontrado.")
+    if (idPedido == null || idPedido <= 0) {
+        println("⚠ ID inválido.")
+        return
     }
-    println("Seleccione el estado a cambiar \n" +
-            "(Pendiente -> EnPreparacion -> Enviado -> Entregado) \n" +
-            "    Siguiente estado marque 1,\n" +
-            "    Cancelado marque 2,\n" +
-            "    Cancelar accion marque 0")
-    when(readLine()?.toIntOrNull()){
+
+    val pedido = SessionBD.obtenerTodosLosPedidos().find { it.getId() == idPedido }
+        ?: throw PedidoNoEncontradoException("⚠ Pedido no encontrado.")
+
+    println(
+        "Seleccione el estado a cambiar \n" +
+                "(Pendiente -> EnPreparacion -> Enviado -> Entregado) \n" +
+                "    Siguiente estado marque 1,\n" +
+                "    Cancelado marque 2,\n" +
+                "    Cancelar acción marque 0"
+    )
+
+    when (readLine()?.toIntOrNull()) {
         1 -> {
             val estados = EstadoPedido.values()
-            val estadoActual = pedido?.getEstado()
-            if (estadoActual != null) {
-                val siguienteIndice = estadoActual.ordinal + 1
-                if (siguienteIndice < estados.size - 1) {
-                    pedido?.cambiarEstado(estados[siguienteIndice])   // pasa al siguiente
-                } else {
-                    println("⚠ Ya estás en el último estado.")
-                }
+            val estadoActual = pedido.getEstado()
+            val siguienteIndice = estadoActual.ordinal + 1
+            if (siguienteIndice < estados.size - 1) {
+                pedido.cambiarEstado(estados[siguienteIndice])   // pasa al siguiente
+                println("✅ Estado actualizado a: ${estados[siguienteIndice]}")
+            } else {
+                println("⚠ Ya estás en el último estado.")
             }
-
         }
-        2 ->{
+        2 -> {
             try {
                 cancelarPedido(pedido)
-            }catch (e: NosePudoCancelar ){
-                println(e.message)
+                println("✅ Pedido cancelado.")
+            } catch (e: NosePudoCancelar) {
+                println("❌ ${e.message}")
             }
-
         }
-        0 -> println("Modificación cancelada.")
+        0 -> println("⏩ Modificación cancelada.")
         else -> println("⚠ Opción inválida.")
     }
-
-
 }
 
 fun cancelarPedido(pedido:Pedido){
